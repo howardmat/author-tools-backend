@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace AuthorTools.Api;
 
-public static class RoutesExtenions
+public static class RouteExtentions
 {
     public static IApplicationBuilder UseRoutes(this WebApplication app)
     {
