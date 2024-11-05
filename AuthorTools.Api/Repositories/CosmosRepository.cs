@@ -11,9 +11,7 @@ public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseC
     private readonly Container _container;
     private readonly CosmosClient _client;
 
-    public CosmosRepository(
-        string cosmosContainerName,
-        IOptions<CosmosDbOptions> cosmosDbOptions)
+    public CosmosRepository(IOptions<CosmosDbOptions> cosmosDbOptions)
     {
         _cosmosDbOptions = cosmosDbOptions.Value;
 
@@ -24,7 +22,8 @@ public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseC
                 PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
             }
         });
-        _container = _client.GetContainer(_cosmosDbOptions.DatabaseName, cosmosContainerName);
+
+        _container = _client.GetContainer(_cosmosDbOptions.DatabaseName, _cosmosDbOptions.ContainerName);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -62,5 +61,5 @@ public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseC
 
     public async Task<T> UpdateAsync(T entity) => await _container.UpsertItemAsync(entity, new PartitionKey(entity.PartitionKey));
 
-    public async Task DeleteAsync(string id) => await _container.DeleteItemAsync<T>(id, new PartitionKey(id));
+    public async Task DeleteAsync(string id, string partitionKey) => await _container.DeleteItemAsync<T>(id, new PartitionKey(partitionKey));
 }

@@ -32,7 +32,7 @@ public class Program
         builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("Application"));
 
         // Repo
-        builder.Services.Configure<CosmosDbOptions>(builder.Configuration.GetSection("AzureCosmosDbSettings"));
+        builder.Services.Configure<CharacterDbOptions>(builder.Configuration.GetSection("CharacterDbSettings"));
         builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
 
         var app = builder.Build();

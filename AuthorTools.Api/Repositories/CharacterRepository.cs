@@ -6,9 +6,7 @@ namespace AuthorTools.Api.Repositories;
 
 public class CharacterRepository : CosmosRepository<Character>, ICharacterRepository
 {
-    private const string CosmosContainerName = "characters";
-
-    public CharacterRepository(IOptions<CosmosDbOptions> cosmosDbOptions)
-        : base(CosmosContainerName, cosmosDbOptions)
+    public CharacterRepository(IOptions<CharacterDbOptions> cosmosDbOptions)
+        : base(cosmosDbOptions)
     { }
 }
