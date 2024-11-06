@@ -11,12 +11,13 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // CORS
+        var corsOptions = builder.Configuration.GetSection("Cors").Get<CorsOptions>();
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins(corsOptions?.AcceptedOrigins ?? [])
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
