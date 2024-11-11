@@ -1,6 +1,7 @@
 
 using AuthorTools.Api.Options;
 using AuthorTools.Api.Repositories;
+using AuthorTools.Api.Services;
 
 namespace AuthorTools.Api;
 
@@ -35,6 +36,9 @@ public class Program
         // Repo
         builder.Services.Configure<CharacterDbOptions>(builder.Configuration.GetSection("CharacterDbSettings"));
         builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
+
+        // Services
+        builder.Services.AddSingleton<FileStorageService>();
 
         var app = builder.Build();
 
