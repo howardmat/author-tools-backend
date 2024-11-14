@@ -13,12 +13,12 @@ public static class RouteExtensions
         app.MapGet("/characters", async (ICharacterRepository characterRepo) =>
         {
             return await characterRepo.GetAllAsync();
-        });
+        }).RequireAuthorization();
 
         app.MapGet("/characters/{id}", async (string id, ICharacterRepository characterRepo) =>
         {
             return await characterRepo.GetByIdAsync(id);
-        });
+        }).RequireAuthorization();
 
         app.MapPost("/characters", async (Character character, ICharacterRepository characterRepo, IOptions<ApplicationOptions> options) =>
         {
@@ -26,7 +26,7 @@ public static class RouteExtensions
             character.PartitionKey = options.Value.Environment;
 
             return await characterRepo.AddAsync(character);
-        });
+        }).RequireAuthorization();
 
         app.MapPut("/characters/{id}", async (string id, Character character, ICharacterRepository characterRepo, IOptions<ApplicationOptions> options) =>
         {
@@ -34,7 +34,7 @@ public static class RouteExtensions
             character.PartitionKey = options.Value.Environment;
 
             return await characterRepo.UpdateAsync(character);
-        });
+        }).RequireAuthorization();
 
         app.MapGet("/file/{id}", async (string id, FileStorageService fileStorageService) =>
         {
@@ -51,7 +51,8 @@ public static class RouteExtensions
             await fileStorageService.UploadBlobAsync(file.FileName, fileId, file.ContentType, memoryStream.ToArray());
 
             return fileId;
-        }).DisableAntiforgery();
+        }).DisableAntiforgery()
+            .RequireAuthorization();
 
         return app;
     }

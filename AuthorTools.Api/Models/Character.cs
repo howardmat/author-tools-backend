@@ -4,13 +4,13 @@ public class Character : BaseCosmosModel
 {
     public string? Name { get; set; }
     public string? Alias { get; set; }
-    public string? Archetype { get; set; }
+    public CodeValue? Archetype { get; set; }
     public string? ImageFileId { get; set; }
     public DateTimeOffset? BirthDate { get; set; }
     public int? Age { get; set; }
     public string? Profession { get; set; }
     public string? LoveInterest { get; set; }
-    public string? Gender { get; set; }
+    public CodeValue? Gender { get; set; }
     public string? EyeColor { get; set; }
     public string? HairType { get; set; }
     public string? HairColor { get; set; }

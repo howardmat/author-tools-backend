@@ -2,6 +2,9 @@
 using AuthorTools.Api.Options;
 using AuthorTools.Api.Repositories;
 using AuthorTools.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace AuthorTools.Api;
 
@@ -25,6 +28,28 @@ public class Program
         });
 
         // Add services to the container.
+        builder.Services.AddAuthentication(x =>
+        {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(x =>
+        {
+            x.Authority = builder.Configuration.GetSection("Jwt:Issuer").Value;
+            x.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
+                ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                    builder.Configuration.GetSection("Jwt:Key").Value)),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true
+            };
+        });
+
+
         builder.Services.AddAuthorization();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -53,6 +78,7 @@ public class Program
 
         app.UseCors();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseRoutes();
