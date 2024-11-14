@@ -27,7 +27,7 @@ public class Program
                 });
         });
 
-        // Add services to the container.
+        // JWT Authentication
         builder.Services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
