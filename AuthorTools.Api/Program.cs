@@ -2,6 +2,7 @@
 using AuthorTools.Api.Options;
 using AuthorTools.Api.Repositories;
 using AuthorTools.Api.Services;
+using AuthorTools.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -64,6 +65,7 @@ public class Program
 
         // Services
         builder.Services.AddSingleton<FileStorageService>();
+        builder.Services.AddSingleton<IIdentityProvider, UserProvider>();
 
         var app = builder.Build();
 

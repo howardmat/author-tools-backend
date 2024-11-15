@@ -6,7 +6,7 @@ namespace AuthorTools.Api.Repositories;
 
 public class CharacterRepository : CosmosRepository<Character>, ICharacterRepository
 {
-    public CharacterRepository(IOptions<CharacterDbOptions> cosmosDbOptions)
-        : base(cosmosDbOptions)
+    public CharacterRepository(IOptions<CharacterDbOptions> cosmosDbOptions, IOptions<ApplicationOptions> appOptions)
+        : base(cosmosDbOptions, appOptions)
     { }
 }

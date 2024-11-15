@@ -5,8 +5,8 @@ namespace AuthorTools.Api.Services;
 
 public class FileStorageService
 {
-    private string METADATA_FILENAME = "Filename";
-    private string METADATA_CONTENTTYPE = "ContentType";
+    private const string METADATA_FILENAME = "Filename";
+    private const string METADATA_CONTENTTYPE = "ContentType";
 
     private readonly IConfiguration _configuration;
     private readonly BlobContainerClient _containerClient;

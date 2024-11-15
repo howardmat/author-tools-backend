@@ -2,9 +2,9 @@
 
 public interface IEntityRepository<T>
 {
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T> GetByIdAsync(string id);
-    Task<T> AddAsync(T entity);
-    Task<T> UpdateAsync(T entity);
-    Task DeleteAsync(string id, string partitionKey);
+    Task<IEnumerable<T>> GetAllAsync(string userId);
+    Task<T> GetByIdAsync(string id, string userId);
+    Task<T> AddAsync(T entity, string userId);
+    Task<T> UpdateAsync(T entity, string userId);
+    Task DeleteAsync(string id, string userId);
 }
