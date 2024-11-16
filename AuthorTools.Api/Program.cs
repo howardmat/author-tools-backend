@@ -1,4 +1,3 @@
-
 using AuthorTools.Api.Options;
 using AuthorTools.Api.Repositories;
 using AuthorTools.Api.Services;
