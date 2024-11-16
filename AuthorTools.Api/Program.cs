@@ -3,6 +3,7 @@ using AuthorTools.Api.Options;
 using AuthorTools.Api.Repositories;
 using AuthorTools.Api.Services;
 using AuthorTools.Api.Services.Interfaces;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -14,6 +15,14 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // KeyVault setup
+        if (builder.Environment.IsProduction())
+        {
+            builder.Configuration.AddAzureKeyVault(
+                new Uri($"https://{builder.Configuration["Application:KeyVaultName"]}.vault.azure.net/"),
+                new DefaultAzureCredential());
+        }
 
         // CORS
         var corsOptions = builder.Configuration.GetSection("Cors").Get<CorsOptions>();
