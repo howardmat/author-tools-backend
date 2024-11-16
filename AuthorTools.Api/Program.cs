@@ -6,6 +6,7 @@ using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 
 namespace AuthorTools.Api;
 
@@ -20,7 +21,7 @@ public class Program
         {
             builder.Configuration.AddAzureKeyVault(
                 new Uri($"https://{builder.Configuration.GetSection("KeyVaultName").Value
-                    ?? throw new Exception($"Failed to read appsetting {builder.Configuration.GetSection("KeyVaultName").Value}")}.vault.azure.net/"),
+                    ?? throw new Exception($"Failed to read appsetting {JsonSerializer.Serialize(builder.Configuration.Sources)}")}.vault.azure.net/"),
                 new DefaultAzureCredential());
         }
 
