@@ -20,7 +20,7 @@ public class Program
         if (builder.Environment.IsProduction())
         {
             builder.Configuration.AddAzureKeyVault(
-                new Uri($"https://{builder.Configuration["Application:KeyVaultName"]}.vault.azure.net/"),
+                new Uri($"https://{builder.Configuration.GetSection("Application:KeyVaultName").Value}.vault.azure.net/"),
                 new DefaultAzureCredential());
         }
 
