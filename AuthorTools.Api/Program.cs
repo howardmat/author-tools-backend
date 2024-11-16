@@ -21,7 +21,7 @@ public class Program
         {
             builder.Configuration.AddAzureKeyVault(
                 new Uri($"https://{builder.Configuration.GetSection("KeyVaultName").Value
-                    ?? throw new Exception($"Failed to read appsetting {JsonSerializer.Serialize(builder.Configuration.Sources)}")}.vault.azure.net/"),
+                    ?? throw new Exception($"Failed to read appsetting {JsonSerializer.Serialize(builder.Configuration)}")}.vault.azure.net/"),
                 new DefaultAzureCredential());
         }
 
