@@ -38,6 +38,7 @@ public static class RouteExtensions
 
             var user = userProvider.GetCurrentUser();
 
+            character.Owner = user;
             return await characterRepo.AddAsync(character, user.Id);
         }).RequireAuthorization();
 
@@ -50,6 +51,7 @@ public static class RouteExtensions
 
             var user = userProvider.GetCurrentUser();
 
+            character.Owner = user;
             return await characterRepo.UpdateAsync(character, user.Id);
         }).RequireAuthorization();
 
