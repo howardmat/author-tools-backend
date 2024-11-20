@@ -67,13 +67,25 @@ public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseC
 
     public async Task<T> AddAsync(T entity, string userId)
     {
+        var now = DateTimeOffset.UtcNow;
+
         entity.PartitionKey = GetPartitionKey(userId);
+        entity.CreatedDateTime = now;
+        entity.UpdatedDateTime = now;
+
         return await _container.CreateItemAsync(entity, new PartitionKey(entity.PartitionKey));
     }
 
     public async Task<T> UpdateAsync(T entity, string userId)
     {
-        entity.PartitionKey = GetPartitionKey(userId);
+        if (string.IsNullOrWhiteSpace(entity.Id)) throw new ArgumentNullException(nameof(entity));
+
+        var existingEntity = await GetByIdAsync(entity.Id, userId) ?? throw new ArgumentNullException(nameof(entity));
+
+        entity.PartitionKey = existingEntity.PartitionKey;
+        entity.CreatedDateTime = existingEntity.CreatedDateTime;
+        entity.UpdatedDateTime = DateTimeOffset.UtcNow;
+
         return await _container.UpsertItemAsync(entity, new PartitionKey(entity.PartitionKey));
     }
 
