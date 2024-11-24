@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.Api.Repositories;
+﻿namespace AuthorTools.Data.Repositories;
 
 public interface IEntityRepository<T>
 {

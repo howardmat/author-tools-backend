@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.Api.Models;
+﻿namespace AuthorTools.Data.Models;
 
 public class CharacterRelationship
 {

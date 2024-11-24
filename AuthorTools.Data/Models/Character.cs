@@ -1,4 +1,6 @@
-﻿namespace AuthorTools.Api.Models;
+﻿using AuthorTools.SharedLib.Common;
+
+namespace AuthorTools.Data.Models;
 
 public class Character : BaseCosmosModel
 {

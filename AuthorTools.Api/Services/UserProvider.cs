@@ -1,6 +1,6 @@
 ﻿using AuthorTools.Api.Exceptions;
-using AuthorTools.Api.Models;
 using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Data.Models;
 
 namespace AuthorTools.Api.Services;
 

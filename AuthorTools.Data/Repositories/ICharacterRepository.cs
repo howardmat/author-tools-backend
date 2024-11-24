@@ -1,6 +1,6 @@
-﻿using AuthorTools.Api.Models;
+﻿using AuthorTools.Data.Models;
 
-namespace AuthorTools.Api.Repositories;
+namespace AuthorTools.Data.Repositories;
 
 public interface ICharacterRepository : IEntityRepository<Character>
 {

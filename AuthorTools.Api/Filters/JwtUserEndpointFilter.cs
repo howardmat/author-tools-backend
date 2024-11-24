@@ -1,5 +1,5 @@
-﻿using AuthorTools.Api.Models;
-using AuthorTools.Api.Services.Interfaces;
+﻿using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Data.Models;
 using System.Security.Claims;
 
 namespace AuthorTools.Api.Filters;

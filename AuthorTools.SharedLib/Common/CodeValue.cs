@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.Api.Models;
+﻿namespace AuthorTools.SharedLib.Common;
 
 public class CodeValue(string code, string value)
 {
