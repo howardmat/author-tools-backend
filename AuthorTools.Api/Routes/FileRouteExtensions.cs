@@ -3,9 +3,9 @@ using AuthorTools.Api.Services.Interfaces;
 
 namespace AuthorTools.Api.Routes;
 
-public static class FileRoutes
+public static class FileRouteExtensions
 {
-    public static void Add(WebApplication app)
+    public static void MapFileRoutes(this WebApplication app)
     {
         app.MapGet("/file/{id}", async (string id, IFileService fileService) => await fileService.GetFileResult(id));
 

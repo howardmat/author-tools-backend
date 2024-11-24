@@ -4,8 +4,8 @@ public static class RouteExtensions
 {
     public static IApplicationBuilder UseRoutes(this WebApplication app)
     {
-        CharacterRoutes.Add(app);
-        FileRoutes.Add(app);
+        app.MapCharacterRoutes();
+        app.MapFileRoutes();
 
         return app;
     }

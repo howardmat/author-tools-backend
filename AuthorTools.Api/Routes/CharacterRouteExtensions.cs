@@ -4,9 +4,9 @@ using AuthorTools.Data.Models;
 
 namespace AuthorTools.Api.Routes;
 
-public static class CharacterRoutes
+public static class CharacterRouteExtensions
 {
-    public static void Add(WebApplication app)
+    public static void MapCharacterRoutes(this WebApplication app)
     {
         app.MapGet("/characters", async (ICharacterService characterService) => await characterService.GetAllAsync())
             .RequireAuthorization()
