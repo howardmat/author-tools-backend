@@ -1,24 +1,17 @@
-﻿using AuthorTools.Api.Models;
-using AuthorTools.Api.Options;
+﻿using AuthorTools.Data.Models;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Options;
 
-namespace AuthorTools.Api.Repositories;
+namespace AuthorTools.Data.Repositories;
 
 public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseCosmosModel
 {
-    private readonly ApplicationOptions _appOptions;
-    private readonly CosmosDbOptions _cosmosDbOptions;
     private readonly Container _container;
     private readonly CosmosClient _client;
+    private readonly string _partitionKeyBase;
 
-    public CosmosRepository(IOptions<CosmosDbOptions> cosmosDbOptions,
-        IOptions<ApplicationOptions> appOptions)
+    public CosmosRepository(string cosmosUrl, string key, string databaseName, string containerName, string partitionKeyBase)
     {
-        _appOptions = appOptions.Value;
-        _cosmosDbOptions = cosmosDbOptions.Value;
-
-        _client = new CosmosClient(_cosmosDbOptions.Url, _cosmosDbOptions.PrimaryKey, new CosmosClientOptions
+        _client = new CosmosClient(cosmosUrl, key, new CosmosClientOptions
         {
             SerializerOptions = new CosmosSerializationOptions
             {
@@ -26,7 +19,9 @@ public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseC
             }
         });
 
-        _container = _client.GetContainer(_cosmosDbOptions.DatabaseName, _cosmosDbOptions.ContainerName);
+        _container = _client.GetContainer(databaseName, containerName);
+
+        _partitionKeyBase = partitionKeyBase;
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(string userId)
@@ -92,5 +87,5 @@ public abstract class CosmosRepository<T> : IEntityRepository<T> where T : BaseC
     public async Task DeleteAsync(string id, string userId) =>
         await _container.DeleteItemAsync<T>(id, new PartitionKey(GetPartitionKey(userId)));
 
-    private string GetPartitionKey(string value) => $"{_appOptions.Environment}_{value}";
+    private string GetPartitionKey(string value) => $"{_partitionKeyBase}_{value}";
 }

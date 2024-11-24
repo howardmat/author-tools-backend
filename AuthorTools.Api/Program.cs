@@ -1,7 +1,8 @@
 using AuthorTools.Api.Options;
-using AuthorTools.Api.Repositories;
+using AuthorTools.Api.Routes;
 using AuthorTools.Api.Services;
 using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Data.Repositories;
 using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +40,8 @@ public class Program
         });
 
         // JWT Authentication
+        var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
+            ?? throw new ArgumentException("Error getting JWT Settings");
         builder.Services.AddAuthentication(x =>
         {
             x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,20 +49,18 @@ public class Program
             x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(x =>
         {
-            x.Authority = builder.Configuration.GetSection("Jwt:Issuer").Value;
+            x.Authority = jwtSettings.Issuer;
             x.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidIssuer = builder.Configuration.GetSection("Jwt:Issuer").Value,
-                ValidAudience = builder.Configuration.GetSection("Jwt:Audience").Value,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                    builder.Configuration.GetSection("Jwt:Key").Value)),
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true
             };
         });
-
 
         builder.Services.AddAuthorization();
 
@@ -69,13 +70,25 @@ public class Program
 
         builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("Application"));
 
-        // Repo
-        builder.Services.Configure<CharacterDbOptions>(builder.Configuration.GetSection("CharacterDbSettings"));
-        builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
+        var environment = builder.Configuration.GetValue<string>("Application:Environment")
+            ?? throw new ArgumentException("Error getting Application:Environment");
+
+        // Repos
+        var characterDbSettings = builder.Configuration.GetSection("CharacterDbSettings").Get<CharacterDbOptions>()
+            ?? throw new ArgumentException("Error getting CharacterDbSettings");
+        builder.Services.AddScoped<ICharacterRepository, CharacterRepository>(sp =>
+            new CharacterRepository(
+                characterDbSettings.Url,
+                characterDbSettings.PrimaryKey,
+                characterDbSettings.DatabaseName,
+                characterDbSettings.ContainerName,
+                environment));
 
         // Services
-        builder.Services.AddSingleton<FileStorageService>();
-        builder.Services.AddSingleton<IIdentityProvider, UserProvider>();
+        builder.Services.AddScoped<IIdentityProvider, UserProvider>();
+        builder.Services.AddScoped<AzureBlobService>();
+        builder.Services.AddScoped<IFileService, FileService>();
+        builder.Services.AddScoped<ICharacterService, CharacterService>();
 
         var app = builder.Build();
 

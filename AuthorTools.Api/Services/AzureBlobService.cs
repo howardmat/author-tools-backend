@@ -3,7 +3,7 @@ using Azure.Storage.Blobs;
 
 namespace AuthorTools.Api.Services;
 
-public class FileStorageService
+public class AzureBlobService
 {
     private const string METADATA_FILENAME = "Filename";
     private const string METADATA_CONTENTTYPE = "ContentType";
@@ -11,7 +11,7 @@ public class FileStorageService
     private readonly IConfiguration _configuration;
     private readonly BlobContainerClient _containerClient;
 
-    public FileStorageService(IConfiguration configuration)
+    public AzureBlobService(IConfiguration configuration)
     {
         _configuration = configuration;
 
@@ -44,5 +44,11 @@ public class FileStorageService
 
         await blobClient.UploadAsync(memoryStream, true);
         await blobClient.SetMetadataAsync(meta);
+    }
+
+    public async Task DeleteBlobAsync(string fileId)
+    {
+        var blobClient = _containerClient.GetBlobClient(fileId);
+        await blobClient.DeleteAsync();
     }
 }
