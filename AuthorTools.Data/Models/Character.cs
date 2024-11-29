@@ -25,5 +25,6 @@ public class Character : BaseCosmosModel
     public string? FriendsAndFamily { get; set; }
     public string? History { get; set; }
     public string? FamilyHistory { get; set; }
+    public int? Order { get; set; }
     public IEnumerable<CharacterRelationship> Relationships { get; set; } = [];
 }
