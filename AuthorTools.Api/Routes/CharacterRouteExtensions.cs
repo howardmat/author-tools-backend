@@ -1,6 +1,7 @@
 ﻿using AuthorTools.Api.Filters;
 using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Models;
+using AuthorTools.SharedLib.Models;
 
 namespace AuthorTools.Api.Routes;
 
@@ -21,6 +22,11 @@ public static class CharacterRouteExtensions
             .AddEndpointFilter<JwtUserEndpointFilter>();
 
         app.MapPut("/characters/{id}", async (string id, Character character, ICharacterService characterService) => await characterService.UpdateAsync(id, character))
+            .RequireAuthorization()
+            .AddEndpointFilter<JwtUserEndpointFilter>();
+
+        app.MapPatch("/characters/{id}", async (string id, PatchRequest[] patchRequests, ICharacterService characterService) =>
+            await characterService.PatchAsync(id, patchRequests))
             .RequireAuthorization()
             .AddEndpointFilter<JwtUserEndpointFilter>();
 
