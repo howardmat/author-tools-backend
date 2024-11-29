@@ -11,13 +11,13 @@ env:
   AZURE_APIM_SERVICENAME: author-tools-api-api
   AZURE_APIM_API_ID: author-tools-api
   AZURE_APIM_APPSERVICEURL: https://author-tools-backend-app.azurewebsites.net
-  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 6.9.0
+  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 7.1.0
   SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
   API_IMPORT_SPECIFICATION_PATH: AuthorTools.Api\publish\swagger.json
-  API_IMPORT_DLL: AuthorTools.Api\bin\Release\net8.0\AuthorTools.Api.dll
+  API_IMPORT_DLL: AuthorTools.Api\bin\Release\net9.0\AuthorTools.Api.dll
   API_IMPORT_VERSION: v1
   CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 8.0.x
+  DOTNET_CORE_VERSION: 9.0.x
   WORKING_DIRECTORY: AuthorTools.Api
 jobs:
   build:
