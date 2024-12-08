@@ -7,9 +7,11 @@ public static class FileRouteExtensions
 {
     public static void MapFileRoutes(this WebApplication app)
     {
-        app.MapGet("/file/{id}", async (string id, IFileService fileService) => await fileService.GetFileResult(id));
+        var group = app.MapGroup("/file");
 
-        app.MapPost("/file", async (IFormFile file, IFileService fileService) => await fileService.UploadAsync(file))
+        group.MapGet("{id}", async (string id, IFileService fileService) => await fileService.GetFileResult(id));
+
+        group.MapPost("", async (IFormFile file, IFileService fileService) => await fileService.UploadAsync(file))
             .DisableAntiforgery()
             .RequireAuthorization()
             .AddEndpointFilter<JwtUserEndpointFilter>();
