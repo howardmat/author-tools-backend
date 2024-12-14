@@ -1,4 +1,7 @@
-﻿using AuthorTools.Data.Models;
+﻿using AuthorTools.Data.Enums;
+using AuthorTools.Data.Models;
+using AuthorTools.Data.Models.Interfaces;
+using AuthorTools.Data.Repositories.Interfaces;
 using AuthorTools.SharedLib.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;

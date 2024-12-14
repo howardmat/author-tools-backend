@@ -3,6 +3,7 @@ using AuthorTools.Api.Routes;
 using AuthorTools.Api.Services;
 using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Repositories;
+using AuthorTools.Data.Repositories.Interfaces;
 using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -76,17 +77,19 @@ public class Program
         // Repos
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
             ?? throw new ArgumentException("Error getting MongoDbSettings");
+
         builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>(sp =>
-            new CharacterRepository(
-                mongoDbSettings.DatabaseName,
-                mongoDbSettings.ConnectionString,
-                environment));
+            new CharacterRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+
+        builder.Services.AddSingleton<IUserSettingRepository, UserSettingRepository>(sp =>
+            new UserSettingRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
         // Services
         builder.Services.AddScoped<IIdentityProvider, UserProvider>();
         builder.Services.AddScoped<AzureBlobService>();
         builder.Services.AddScoped<IFileService, FileService>();
         builder.Services.AddScoped<ICharacterService, CharacterService>();
+        builder.Services.AddScoped<IUserSettingService, UserSettingService>();
 
         var app = builder.Build();
 

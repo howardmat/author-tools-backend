@@ -1,4 +1,6 @@
-﻿namespace AuthorTools.Data.Models;
+﻿using AuthorTools.Data.Models.Interfaces;
+
+namespace AuthorTools.Data.Models;
 
 public class Character : BaseMongoModel, ISortableModel
 {

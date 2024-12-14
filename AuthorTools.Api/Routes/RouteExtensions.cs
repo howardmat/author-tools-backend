@@ -6,6 +6,7 @@ public static class RouteExtensions
     {
         app.MapCharacterRoutes();
         app.MapFileRoutes();
+        app.MapUserSettingRoutes();
 
         return app;
     }

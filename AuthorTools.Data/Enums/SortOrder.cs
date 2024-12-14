@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.Data.Models;
+﻿namespace AuthorTools.Data.Enums;
 
 public enum SortOrder
 {
