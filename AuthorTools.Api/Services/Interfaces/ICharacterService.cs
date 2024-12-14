@@ -9,6 +9,6 @@ public interface ICharacterService
     Task<Character> GetAsync(string id);
     Task<Character> CreateAsync(Character character);
     Task<Character> UpdateAsync(string id, Character character);
-    Task<Character> PatchAsync(string id, IEnumerable<PatchRequest> patchRequests);
+    Task PatchAsync(string id, IEnumerable<PatchRequest> patchRequests);
     Task DeleteAsync(string id);
 }

@@ -2,9 +2,11 @@
 
 namespace AuthorTools.Data.Repositories;
 
-public class CharacterRepository : CosmosRepository<Character>, ICharacterRepository
+public class CharacterRepository : MongoDbRepository<Character>, ICharacterRepository
 {
-    public CharacterRepository(string cosmosUrl, string key, string databaseName, string containerName, string environment)
-        : base(cosmosUrl, key, databaseName, containerName, environment)
+    private const string ContainerName = "characters";
+
+    public CharacterRepository(string databaseName, string connectionString, string partitionKeyBase)
+        : base(ContainerName, databaseName, connectionString, partitionKeyBase)
     { }
 }

@@ -1,7 +1,6 @@
 ﻿using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories;
-using AuthorTools.SharedLib.Extensions;
 using AuthorTools.SharedLib.Models;
 
 namespace AuthorTools.Api.Services;
@@ -25,7 +24,7 @@ public class CharacterService : ICharacterService
     public async Task<IEnumerable<Character>> GetAllAsync()
     {
         var user = _identityProvider.GetCurrentUser();
-        return await _characterRepo.GetAllAsync(user.Id, nameof(Character.Order).ToCamelCase());
+        return await _characterRepo.GetAllAsync<Character>(user.Id, SortOrder.Ascending);
     }
 
     public async Task<Character> GetAsync(string id)
@@ -38,10 +37,9 @@ public class CharacterService : ICharacterService
     {
         var user = _identityProvider.GetCurrentUser();
 
-        character.Id = Guid.NewGuid().ToString();
         character.Owner = user;
 
-        return await _characterRepo.AddAsync(character, user.Id);
+        return await _characterRepo.CreateAsync(character, user.Id);
     }
 
     public async Task<Character> UpdateAsync(string id, Character character)
@@ -54,14 +52,11 @@ public class CharacterService : ICharacterService
         return await _characterRepo.UpdateAsync(character, user.Id);
     }
 
-    public async Task<Character> PatchAsync(string id, IEnumerable<PatchRequest> patchRequests)
+    public async Task PatchAsync(string id, IEnumerable<PatchRequest> patchRequests)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        return await _characterRepo.PatchAsync(
-            id,
-            patchRequests.Select(r => r.ToPatchOperation()).ToList(),
-            user.Id);
+        await _characterRepo.PatchAsync(id, patchRequests, user.Id);
     }
 
     public async Task DeleteAsync(string id)
