@@ -10,8 +10,7 @@ public static class UserSettingRouteExtensions
     {
         var group = app.MapGroup("/user-setting")
             .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>()
-            .RequireCors();
+            .AddEndpointFilter<JwtUserEndpointFilter>();
 
         group.MapGet("", async (IUserSettingService service) => await service.GetAsync());
 

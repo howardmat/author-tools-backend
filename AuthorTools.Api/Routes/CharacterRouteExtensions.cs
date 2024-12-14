@@ -11,8 +11,7 @@ public static class CharacterRouteExtensions
     {
         var group = app.MapGroup("/characters")
             .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>()
-            .RequireCors();
+            .AddEndpointFilter<JwtUserEndpointFilter>();
 
         group.MapGet("", async (ICharacterService characterService) => await characterService.GetAllAsync());
 
