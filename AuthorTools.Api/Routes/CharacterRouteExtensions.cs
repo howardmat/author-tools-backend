@@ -9,31 +9,22 @@ public static class CharacterRouteExtensions
 {
     public static void MapCharacterRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/characters");
-
-        group.MapGet("", async (ICharacterService characterService) => await characterService.GetAllAsync())
+        var group = app.MapGroup("/characters")
             .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+            .AddEndpointFilter<JwtUserEndpointFilter>()
+            .RequireCors();
 
-        group.MapGet("{id}", async (string id, ICharacterService characterService) => await characterService.GetAsync(id))
-            .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+        group.MapGet("", async (ICharacterService characterService) => await characterService.GetAllAsync());
 
-        group.MapPost("", async (Character character, ICharacterService characterService) => await characterService.CreateAsync(character))
-            .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+        group.MapGet("{id}", async (string id, ICharacterService characterService) => await characterService.GetAsync(id));
 
-        group.MapPut("{id}", async (string id, Character character, ICharacterService characterService) => await characterService.UpdateAsync(id, character))
-            .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+        group.MapPost("", async (Character character, ICharacterService characterService) => await characterService.CreateAsync(character));
+
+        group.MapPut("{id}", async (string id, Character character, ICharacterService characterService) => await characterService.UpdateAsync(id, character));
 
         group.MapPatch("{id}", async (string id, PatchRequest[] patchRequests, ICharacterService characterService) =>
-            await characterService.PatchAsync(id, patchRequests))
-            .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+            await characterService.PatchAsync(id, patchRequests));
 
-        group.MapDelete("{id}", async (string id, ICharacterService characterService) => await characterService.DeleteAsync(id))
-            .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+        group.MapDelete("{id}", async (string id, ICharacterService characterService) => await characterService.DeleteAsync(id));
     }
 }
