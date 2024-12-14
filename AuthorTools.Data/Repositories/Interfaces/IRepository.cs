@@ -1,7 +1,8 @@
-﻿using AuthorTools.Data.Models;
+﻿using AuthorTools.Data.Enums;
+using AuthorTools.Data.Models.Interfaces;
 using AuthorTools.SharedLib.Models;
 
-namespace AuthorTools.Data.Repositories;
+namespace AuthorTools.Data.Repositories.Interfaces;
 
 public interface IRepository<T>
 {

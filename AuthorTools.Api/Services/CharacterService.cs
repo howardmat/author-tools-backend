@@ -1,6 +1,7 @@
 ﻿using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Data.Enums;
 using AuthorTools.Data.Models;
-using AuthorTools.Data.Repositories;
+using AuthorTools.Data.Repositories.Interfaces;
 using AuthorTools.SharedLib.Models;
 
 namespace AuthorTools.Api.Services;
