@@ -11,10 +11,10 @@ public class UserSettingService(
     private readonly IUserSettingRepository _repository = repository;
     private readonly IIdentityProvider _identityProvider = identityProvider;
 
-    public async Task<UserSetting> GetAsync()
+    public async Task<UserSetting?> GetAsync()
     {
         var user = _identityProvider.GetCurrentUser();
-        return (await _repository.GetAllAsync(user.Id)).First();
+        return (await _repository.GetAllAsync(user.Id)).FirstOrDefault();
     }
 
     public async Task<UserSetting> CreateAsync(UserSetting userSetting)
