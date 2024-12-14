@@ -2,6 +2,6 @@
 
 namespace AuthorTools.Data.Repositories;
 
-public interface ICharacterRepository : IEntityRepository<Character>
+public interface ICharacterRepository : IRepository<Character>
 {
 }

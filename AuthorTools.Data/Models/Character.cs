@@ -1,6 +1,6 @@
 ﻿namespace AuthorTools.Data.Models;
 
-public class Character : BaseCosmosModel
+public class Character : BaseMongoModel, ISortableModel
 {
     public string? Name { get; set; }
     public string? ImageFileId { get; set; }

@@ -74,14 +74,12 @@ public class Program
             ?? throw new ArgumentException("Error getting Application:Environment");
 
         // Repos
-        var characterDbSettings = builder.Configuration.GetSection("CharacterDbSettings").Get<CharacterDbOptions>()
-            ?? throw new ArgumentException("Error getting CharacterDbSettings");
-        builder.Services.AddScoped<ICharacterRepository, CharacterRepository>(sp =>
+        var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
+            ?? throw new ArgumentException("Error getting MongoDbSettings");
+        builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>(sp =>
             new CharacterRepository(
-                characterDbSettings.Url,
-                characterDbSettings.PrimaryKey,
-                characterDbSettings.DatabaseName,
-                characterDbSettings.ContainerName,
+                mongoDbSettings.DatabaseName,
+                mongoDbSettings.ConnectionString,
                 environment));
 
         // Services
