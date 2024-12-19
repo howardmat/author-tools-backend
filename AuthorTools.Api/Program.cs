@@ -1,3 +1,4 @@
+using AuthorTools.Api.Handlers;
 using AuthorTools.Api.Options;
 using AuthorTools.Api.Routes;
 using AuthorTools.Api.Services;
@@ -26,6 +27,10 @@ public class Program
                     ?? throw new Exception($"Failed to read appsetting {JsonSerializer.Serialize(builder.Configuration)}")}.vault.azure.net/"),
                 new DefaultAzureCredential());
         }
+
+        // Global Exception Handling
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
 
         // CORS
         var corsOptions = builder.Configuration.GetSection("Cors").Get<CorsOptions>();
@@ -69,6 +74,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Appsettings to IOptions
         builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("Application"));
 
         var environment = builder.Configuration.GetValue<string>("Application:Environment")
@@ -85,13 +91,16 @@ public class Program
             new UserSettingRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
         // Services
-        builder.Services.AddScoped<IIdentityProvider, UserProvider>();
         builder.Services.AddScoped<AzureBlobService>();
+        builder.Services.AddScoped<IIdentityProvider, UserProvider>();
         builder.Services.AddScoped<IFileService, FileService>();
         builder.Services.AddScoped<ICharacterService, CharacterService>();
         builder.Services.AddScoped<IUserSettingService, UserSettingService>();
 
         var app = builder.Build();
+
+        // Exception handling 
+        app.UseExceptionHandler();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
