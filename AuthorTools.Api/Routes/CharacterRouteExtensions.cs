@@ -11,19 +11,25 @@ public static class CharacterRouteExtensions
     {
         var group = app.MapGroup("/characters")
             .RequireAuthorization()
-            .AddEndpointFilter<JwtUserEndpointFilter>();
+            .AddEndpointFilter<JwtUserEndpointFilter>()
+            .WithTags($"{typeof(Character).Name}");
 
-        group.MapGet("", async (ICharacterService characterService) => await characterService.GetAllAsync());
+        group.MapGet("", async (ICommonEntityService<Character> entityService)
+            => await entityService.GetAllAsync());
 
-        group.MapGet("{id}", async (string id, ICharacterService characterService) => await characterService.GetAsync(id));
+        group.MapGet("{id}", async (string id, ICommonEntityService<Character> entityService)
+            => await entityService.GetAsync(id));
 
-        group.MapPost("", async (Character character, ICharacterService characterService) => await characterService.CreateAsync(character));
+        group.MapPost("", async (Character entity, ICommonEntityService<Character> entityService)
+            => await entityService.CreateAsync(entity));
 
-        group.MapPut("{id}", async (string id, Character character, ICharacterService characterService) => await characterService.UpdateAsync(id, character));
+        group.MapPut("{id}", async (string id, Character entity, ICommonEntityService<Character> entityService)
+            => await entityService.UpdateAsync(id, entity));
 
-        group.MapPatch("{id}", async (string id, PatchRequest[] patchRequests, ICharacterService characterService) =>
-            await characterService.PatchAsync(id, patchRequests));
+        group.MapPatch("{id}", async (string id, PatchRequest[] patchRequests, ICommonEntityService<Character> entityService)
+            => await entityService.PatchAsync(id, patchRequests));
 
-        group.MapDelete("{id}", async (string id, ICharacterService characterService) => await characterService.DeleteAsync(id));
+        group.MapDelete("{id}", async (string id, ICommonEntityService<Character> entityService)
+            => await entityService.DeleteAsync(id));
     }
 }
