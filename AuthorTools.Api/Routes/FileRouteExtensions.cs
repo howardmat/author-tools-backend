@@ -7,7 +7,8 @@ public static class FileRouteExtensions
 {
     public static void MapFileRoutes(this WebApplication app)
     {
-        var group = app.MapGroup("/file");
+        var group = app.MapGroup("/file")
+            .WithTags("File");
 
         group.MapGet("{id}", async (string id, IFileService fileService) => await fileService.GetFileResult(id));
 

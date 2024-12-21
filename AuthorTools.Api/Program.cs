@@ -3,6 +3,7 @@ using AuthorTools.Api.Options;
 using AuthorTools.Api.Routes;
 using AuthorTools.Api.Services;
 using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories;
 using AuthorTools.Data.Repositories.Interfaces;
 using Azure.Identity;
@@ -84,18 +85,29 @@ public class Program
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
             ?? throw new ArgumentException("Error getting MongoDbSettings");
 
-        builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>(sp =>
-            new CharacterRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
-
         builder.Services.AddSingleton<IUserSettingRepository, UserSettingRepository>(sp =>
             new UserSettingRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+
+        builder.Services.AddSingleton<ICommonEntityRepository<Character>, CommonEntityRepository<Character>>(sp =>
+            new CommonEntityRepository<Character>(
+                mongoDbSettings.ContainerNames.Character, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+
+        builder.Services.AddSingleton<ICommonEntityRepository<Location>, CommonEntityRepository<Location>>(sp =>
+            new CommonEntityRepository<Location>(
+                mongoDbSettings.ContainerNames.Location, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+
+        builder.Services.AddSingleton<ICommonEntityRepository<Creature>, CommonEntityRepository<Creature>>(sp =>
+            new CommonEntityRepository<Creature>(
+                mongoDbSettings.ContainerNames.Creature, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
         // Services
         builder.Services.AddScoped<AzureBlobService>();
         builder.Services.AddScoped<IIdentityProvider, UserProvider>();
         builder.Services.AddScoped<IFileService, FileService>();
-        builder.Services.AddScoped<ICharacterService, CharacterService>();
         builder.Services.AddScoped<IUserSettingService, UserSettingService>();
+        builder.Services.AddScoped<ICommonEntityService<Character>, CommonEntityService<Character>>();
+        builder.Services.AddScoped<ICommonEntityService<Location>, CommonEntityService<Location>>();
+        builder.Services.AddScoped<ICommonEntityService<Creature>, CommonEntityService<Creature>>();
 
         var app = builder.Build();
 
