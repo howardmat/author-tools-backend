@@ -88,6 +88,9 @@ public class Program
         builder.Services.AddSingleton<IUserSettingRepository, UserSettingRepository>(sp =>
             new UserSettingRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
+        builder.Services.AddSingleton<IWorkspaceRepository, WorkspaceRepository>(sp =>
+            new WorkspaceRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+
         builder.Services.AddSingleton<ICommonEntityRepository<Character>, CommonEntityRepository<Character>>(sp =>
             new CommonEntityRepository<Character>(
                 mongoDbSettings.ContainerNames.Character, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
@@ -105,6 +108,7 @@ public class Program
         builder.Services.AddScoped<IIdentityProvider, UserProvider>();
         builder.Services.AddScoped<IFileService, FileService>();
         builder.Services.AddScoped<IUserSettingService, UserSettingService>();
+        builder.Services.AddScoped<IWorkspaceService, WorkspaceService>();
         builder.Services.AddScoped<ICommonEntityService<Character>, CommonEntityService<Character>>();
         builder.Services.AddScoped<ICommonEntityService<Location>, CommonEntityService<Location>>();
         builder.Services.AddScoped<ICommonEntityService<Creature>, CommonEntityService<Creature>>();

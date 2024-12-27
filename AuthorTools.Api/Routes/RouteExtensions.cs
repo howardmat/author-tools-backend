@@ -9,6 +9,7 @@ public static class RouteExtensions
         app.MapCreatureRoutes();
         app.MapFileRoutes();
         app.MapUserSettingRoutes();
+        app.MapWorkspaceRoutes();
 
         return app;
     }
