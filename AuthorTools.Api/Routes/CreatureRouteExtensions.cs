@@ -14,8 +14,8 @@ public static class CreatureRouteExtensions
             .AddEndpointFilter<JwtUserEndpointFilter>()
             .WithTags($"{typeof(Creature).Name}");
 
-        group.MapGet("", async (ICommonEntityService<Creature> entityService)
-            => await entityService.GetAllAsync());
+        group.MapGet("", async (string workspaceId, ICommonEntityService<Creature> entityService)
+            => await entityService.GetAllAsync(workspaceId));
 
         group.MapGet("{id}", async (string id, ICommonEntityService<Creature> entityService)
             => await entityService.GetAsync(id));
