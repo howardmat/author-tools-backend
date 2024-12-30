@@ -37,15 +37,21 @@ public abstract class MongoDbRepository<T> : IRepository<T> where T : BaseMongoM
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync<TOrderable>(string partitionKeyValue, SortOrder sortOrder) where TOrderable : T, ISortableModel
+    public async Task<IEnumerable<T>> GetAllAsync<TOrderable>(string partitionKeyValue, string workspaceId, SortOrder sortOrder) where TOrderable : T, ISortableModel, IWorkspaceModel
     {
-        var query = _collection.Find(x => x.PartitionKey == GetPartitionKey(partitionKeyValue));
+        IFindFluent<T, T> query;
         if (typeof(TOrderable) == typeof(T))
         {
+            query = _collection.Find(x => ((IWorkspaceModel)x).WorkspaceId == workspaceId && x.PartitionKey == GetPartitionKey(partitionKeyValue));
+
             if (sortOrder == SortOrder.Ascending)
                 query = query.SortBy(x => ((TOrderable)x).Order);
             else
                 query = query.SortByDescending(x => ((TOrderable)x).Order);
+        }
+        else
+        {
+            query = _collection.Find(x => x.PartitionKey == GetPartitionKey(partitionKeyValue));
         }
 
         return await query.ToListAsync();
@@ -120,6 +126,12 @@ public abstract class MongoDbRepository<T> : IRepository<T> where T : BaseMongoM
     public async Task DeleteAsync(string id, string partitionKeyValue)
     {
         await _collection.DeleteOneAsync(x => x.Id == id && x.PartitionKey == GetPartitionKey(partitionKeyValue));
+    }
+
+    public bool Any(FilterDefinition<T> filterDefinition, string partitionKeyValue)
+    {
+        filterDefinition = filterDefinition & Builders<T>.Filter.Where(x => x.PartitionKey == GetPartitionKey(partitionKeyValue));
+        return _collection.Find(filterDefinition).Limit(1).Any();
     }
 
     private string GetPartitionKey(string value) => $"{_partitionKeyBase}_{value}";

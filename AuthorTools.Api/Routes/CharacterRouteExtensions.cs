@@ -14,8 +14,8 @@ public static class CharacterRouteExtensions
             .AddEndpointFilter<JwtUserEndpointFilter>()
             .WithTags($"{typeof(Character).Name}");
 
-        group.MapGet("", async (ICommonEntityService<Character> entityService)
-            => await entityService.GetAllAsync());
+        group.MapGet("", async (string workspaceId, ICommonEntityService<Character> entityService)
+            => await entityService.GetAllAsync(workspaceId));
 
         group.MapGet("{id}", async (string id, ICommonEntityService<Character> entityService)
             => await entityService.GetAsync(id));

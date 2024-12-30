@@ -112,6 +112,7 @@ public class Program
         builder.Services.AddScoped<ICommonEntityService<Character>, CommonEntityService<Character>>();
         builder.Services.AddScoped<ICommonEntityService<Location>, CommonEntityService<Location>>();
         builder.Services.AddScoped<ICommonEntityService<Creature>, CommonEntityService<Creature>>();
+        builder.Services.AddScoped<WorkspaceValidationService>();
 
         var app = builder.Build();
 

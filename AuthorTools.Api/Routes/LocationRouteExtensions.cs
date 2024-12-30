@@ -14,8 +14,8 @@ public static class LocationRouteExtensions
             .AddEndpointFilter<JwtUserEndpointFilter>()
             .WithTags($"{typeof(Location).Name}");
 
-        group.MapGet("", async (ICommonEntityService<Location> entityService)
-            => await entityService.GetAllAsync());
+        group.MapGet("", async (string workspaceId, ICommonEntityService<Location> entityService)
+            => await entityService.GetAllAsync(workspaceId));
 
         group.MapGet("{id}", async (string id, ICommonEntityService<Location> entityService)
             => await entityService.GetAsync(id));

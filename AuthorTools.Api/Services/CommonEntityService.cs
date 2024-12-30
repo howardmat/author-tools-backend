@@ -22,10 +22,10 @@ public class CommonEntityService<T> : ICommonEntityService<T> where T : CommonEn
         _fileService = fileService;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(string workspaceId)
     {
         var user = _identityProvider.GetCurrentUser();
-        return await _entityRepo.GetAllAsync<T>(user.Id, SortOrder.Ascending);
+        return await _entityRepo.GetAllAsync<T>(user.Id, workspaceId, SortOrder.Ascending);
     }
 
     public async Task<T> GetAsync(string id)
