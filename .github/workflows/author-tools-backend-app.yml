@@ -14,10 +14,10 @@ env:
   SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 7.1.0
   SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
   API_IMPORT_SPECIFICATION_PATH: AuthorTools.Api\publish\swagger.json
-  API_IMPORT_DLL: AuthorTools.Api\bin\Release\net9.0\AuthorTools.Api.dll
+  API_IMPORT_DLL: AuthorTools.Api\bin\Release\net10.0\AuthorTools.Api.dll
   API_IMPORT_VERSION: v1
   CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 9.0.x
+  DOTNET_CORE_VERSION: 10.0.x
   WORKING_DIRECTORY: AuthorTools.Api
 jobs:
   build:
@@ -25,11 +25,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Setup SwashBuckle .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.SWASHBUCKLE_DOTNET_CORE_VERSION }}
     - name: Restore
@@ -41,7 +41,7 @@ jobs:
     - name: Publish
       run: dotnet publish ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Publish Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
@@ -50,12 +50,12 @@ jobs:
     needs: build
     steps:
     - name: Download artifact from build job
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v3
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
