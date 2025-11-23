@@ -23,9 +23,11 @@ public class Program
         // KeyVault setup
         if (builder.Environment.IsProduction())
         {
+            var keyVaultName = builder.Configuration.GetSection("KeyVaultName").Value
+                ?? throw new Exception($"Failed to read appsetting {JsonSerializer.Serialize(builder.Configuration)}");
+
             builder.Configuration.AddAzureKeyVault(
-                new Uri($"https://{builder.Configuration.GetSection("KeyVaultName").Value
-                    ?? throw new Exception($"Failed to read appsetting {JsonSerializer.Serialize(builder.Configuration)}")}.vault.azure.net/"),
+                new Uri($"https://{keyVaultName}.vault.azure.net/"),
                 new DefaultAzureCredential());
         }
 
@@ -37,13 +39,12 @@ public class Program
         var corsOptions = builder.Configuration.GetSection("Cors").Get<CorsOptions>();
         builder.Services.AddCors(options =>
         {
-            options.AddDefaultPolicy(
-                policy =>
-                {
-                    policy.WithOrigins(corsOptions?.AcceptedOrigins ?? [])
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins(corsOptions?.AcceptedOrigins ?? [])
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
         });
 
         // JWT Authentication
@@ -57,7 +58,7 @@ public class Program
         }).AddJwtBearer(x =>
         {
             x.Authority = jwtSettings.Issuer;
-            x.TokenValidationParameters = new TokenValidationParameters
+            x.TokenValidationParameters = new()
             {
                 ValidIssuer = jwtSettings.Issuer,
                 ValidAudience = jwtSettings.Audience,
@@ -85,23 +86,20 @@ public class Program
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
             ?? throw new ArgumentException("Error getting MongoDbSettings");
 
-        builder.Services.AddSingleton<IUserSettingRepository, UserSettingRepository>(sp =>
-            new UserSettingRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IUserSettingRepository, UserSettingRepository>(_ =>
+            new(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
-        builder.Services.AddSingleton<IWorkspaceRepository, WorkspaceRepository>(sp =>
-            new WorkspaceRepository(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IWorkspaceRepository, WorkspaceRepository>(_ =>
+            new(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
-        builder.Services.AddSingleton<ICommonEntityRepository<Character>, CommonEntityRepository<Character>>(sp =>
-            new CommonEntityRepository<Character>(
-                mongoDbSettings.ContainerNames.Character, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<ICommonEntityRepository<Character>, CommonEntityRepository<Character>>(_ =>
+            new(mongoDbSettings.ContainerNames.Character, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
-        builder.Services.AddSingleton<ICommonEntityRepository<Location>, CommonEntityRepository<Location>>(sp =>
-            new CommonEntityRepository<Location>(
-                mongoDbSettings.ContainerNames.Location, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<ICommonEntityRepository<Location>, CommonEntityRepository<Location>>(_ =>
+            new(mongoDbSettings.ContainerNames.Location, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
-        builder.Services.AddSingleton<ICommonEntityRepository<Creature>, CommonEntityRepository<Creature>>(sp =>
-            new CommonEntityRepository<Creature>(
-                mongoDbSettings.ContainerNames.Creature, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<ICommonEntityRepository<Creature>, CommonEntityRepository<Creature>>(_ =>
+            new(mongoDbSettings.ContainerNames.Creature, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
         // Services
         builder.Services.AddScoped<AzureBlobService>();
