@@ -1,6 +1,13 @@
-# AuthorTools Backend
+# Author Tools
 
-A modern .NET 10 minimal API backend service for the AuthorTools application, designed to help authors organize and manage their creative content including characters, creatures, locations, and workspaces.
+A modern web application designed to help authors organize and manage their creative writing projects. Author Tools provides a centralized platform for tracking characters, locations, and world-building details across multiple story universes and book series.
+
+## 🎯 Features
+
+- **Story Universe Management**: Organize multiple book series and standalone stories in separate universes
+- **Character Tracking**: Maintain detailed character profiles, relationships, and development arcs
+- **Location/Setting Database**: Document and reference settings, locations, and world-building elements
+- **Secure Authentication**: Protected workspace with user-specific data management
 
 ## 🏗️ Architecture
 
@@ -66,12 +73,6 @@ Key configuration sections:
 - CORS allowed origins
 - Azure Storage connection strings
 
-## 🔗 Related Projects
-
-**Frontend Application**: [AuthorTools Frontend](https://github.com/howardmat/author-tools-frontend)
-
-The frontend is built with modern web technologies and provides an intuitive interface for authors to manage their creative content. It communicates with this backend API for all data operations and authentication.
-
 ## 🚦 Getting Started
 
 1. Clone the repository:
@@ -91,4 +92,8 @@ This project is configured for deployment to Azure App Services with automated C
 
 ## 📄 License
 
-This project is licensed under the GNU General Public License v3.0 - see the `COPYING` file for details.
+This project is licensed under GNU General Public License v3.0 - see the COPYING file for details.
+
+## 👤 Author
+
+Mat Howard - [GitHub Profile](https://github.com/howardmat)
