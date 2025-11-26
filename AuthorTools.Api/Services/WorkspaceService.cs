@@ -32,6 +32,11 @@ public class WorkspaceService(
 
         workspace.Owner = user;
 
+        if (workspace.IsDefault)
+        {
+            await ClearDefaultWorkspaceAsync(null, user.Id);
+        }
+
         return await _repository.CreateAsync(workspace, user.Id);
     }
 
@@ -41,6 +46,11 @@ public class WorkspaceService(
 
         workspace.Id = id;
         workspace.Owner = user;
+
+        if (workspace.IsDefault)
+        {
+            await ClearDefaultWorkspaceAsync(id, user.Id);
+        }
 
         return await _repository.UpdateAsync(workspace, user.Id);
     }
@@ -69,5 +79,16 @@ public class WorkspaceService(
         return result;
     }
 
-
+    private async Task ClearDefaultWorkspaceAsync(string? id, string userId)
+    {
+        var workspaces = await _repository.GetAllAsync(userId);
+        foreach (var workspace in workspaces)
+        {
+            if (workspace.Id != id && workspace.IsDefault)
+            {
+                workspace.IsDefault = false;
+                await _repository.UpdateAsync(workspace, userId);
+            }
+        }
+    }
 }
