@@ -15,6 +15,8 @@ public static class WorkspaceRouteExtensions
 
         group.MapGet("", async (IWorkspaceService service) => await service.GetAllAsync());
 
+        group.MapGet("{id}", async (string id, IWorkspaceService service) => await service.GetAsync(id));
+
         group.MapPost("", async (Workspace model, IWorkspaceService service) => await service.CreateAsync(model));
 
         group.MapPut("{id}", async (string id, Workspace model, IWorkspaceService service) => await service.UpdateAsync(id, model));
