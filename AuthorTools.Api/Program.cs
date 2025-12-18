@@ -101,6 +101,12 @@ public class Program
         builder.Services.AddSingleton<ICommonEntityRepository<Creature>, CommonEntityRepository<Creature>>(_ =>
             new(mongoDbSettings.ContainerNames.Creature, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
 
+        // JSON Serialization Options
+        builder.Services.AddSingleton(new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
         // Services
         builder.Services.AddScoped<AzureBlobService>();
         builder.Services.AddScoped<IIdentityProvider, UserProvider>();
