@@ -1,0 +1,6 @@
+{
+  "name": "My Workspace",
+  "description": "My first workspace",
+  "icon": "atom",
+  "isDefault": true
+}
