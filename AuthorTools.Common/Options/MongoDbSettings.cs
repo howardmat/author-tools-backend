@@ -10,6 +10,8 @@ public class MongoDbSettings
 
 public class ContainerNames
 {
+    public string UserSettings { get; set; } = null!;
+    public string Workspace { get; set; } = null!;
     public string Character { get; set; } = null!;
     public string Location { get; set; } = null!;
     public string Creature { get; set; } = null!;

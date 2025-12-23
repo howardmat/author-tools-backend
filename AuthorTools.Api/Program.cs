@@ -87,13 +87,15 @@ public class Program
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
             ?? throw new ArgumentException("Error getting MongoDbSettings");
 
-        builder.Services.AddSingleton<IRepository<UserSetting>, UserSettingRepository>(_ => new(
+        builder.Services.AddSingleton<IRepository<UserSetting>, MongoDbRepository<UserSetting>>(_ => new(
+            mongoDbSettings.ContainerNames.UserSettings,
             mongoDbSettings.DatabaseName, 
             mongoDbSettings.ConnectionString, 
             mongoDbSettings.ForcePartitionKey, 
             environment));
 
-        builder.Services.AddSingleton<IRepository<Workspace>, WorkspaceRepository>(_ => new(
+        builder.Services.AddSingleton<IRepository<Workspace>, MongoDbRepository<Workspace>>(_ => new(
+            mongoDbSettings.ContainerNames.Workspace,
             mongoDbSettings.DatabaseName, 
             mongoDbSettings.ConnectionString,
             mongoDbSettings.ForcePartitionKey,
