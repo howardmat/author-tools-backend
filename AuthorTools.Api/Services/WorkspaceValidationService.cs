@@ -5,15 +5,15 @@ using MongoDB.Driver;
 namespace AuthorTools.Api.Services;
 
 public class WorkspaceValidationService(
-    IWorkspaceRepository workspaceRepo,
-    ICommonEntityRepository<Character> characterRepo,
-    ICommonEntityRepository<Creature> creatureRepo,
-    ICommonEntityRepository<Location> locationRepo)
+    IRepository<Workspace> workspaceRepo,
+    IRepository<Character> characterRepo,
+    IRepository<Creature> creatureRepo,
+    IRepository<Location> locationRepo)
 {
-    private readonly ICommonEntityRepository<Character> _characterRepo = characterRepo;
-    private readonly ICommonEntityRepository<Creature> _creatureRepo = creatureRepo;
-    private readonly ICommonEntityRepository<Location> _locationRepo = locationRepo;
-    private readonly IWorkspaceRepository _workspaceRepo = workspaceRepo;
+    private readonly IRepository<Character> _characterRepo = characterRepo;
+    private readonly IRepository<Creature> _creatureRepo = creatureRepo;
+    private readonly IRepository<Location> _locationRepo = locationRepo;
+    private readonly IRepository<Workspace> _workspaceRepo = workspaceRepo;
 
     public bool AnyData(string workspaceId, string userId)
     {

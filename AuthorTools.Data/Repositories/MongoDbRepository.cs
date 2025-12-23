@@ -9,7 +9,7 @@ using MongoDB.Driver;
 
 namespace AuthorTools.Data.Repositories;
 
-public abstract class MongoDbRepository<T> : IRepository<T> where T : BaseMongoModel
+public class MongoDbRepository<T> : IRepository<T> where T : BaseMongoModel
 {
     private readonly bool _forcePartitionKey;
     private readonly string? _partitionKeyBase;

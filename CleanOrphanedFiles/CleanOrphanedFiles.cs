@@ -9,15 +9,15 @@ namespace CleanOrphanedFiles;
 public class CleanOrphanedFiles(
     ILoggerFactory loggerFactory,
     AzureBlobService azureBlobService,
-    ICommonEntityRepository<Character> characterRepository,
-    ICommonEntityRepository<Location> locationRepository,
-    ICommonEntityRepository<Creature> creatureRepository)
+    IRepository<Character> characterRepository,
+    IRepository<Location> locationRepository,
+    IRepository<Creature> creatureRepository)
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger<CleanOrphanedFiles>();
     private readonly AzureBlobService _azureBlobService = azureBlobService;
-    private readonly ICommonEntityRepository<Character> _characterRepository = characterRepository;
-    private readonly ICommonEntityRepository<Location> _locationRepository = locationRepository;
-    private readonly ICommonEntityRepository<Creature> _creatureRepository = creatureRepository;
+    private readonly IRepository<Character> _characterRepository = characterRepository;
+    private readonly IRepository<Location> _locationRepository = locationRepository;
+    private readonly IRepository<Creature> _creatureRepository = creatureRepository;
 
     [Function("CleanOrphanedFiles")]
     public async Task RunAsync([TimerTrigger("0 0 2 * * *", RunOnStartup = true)] TimerInfo myTimer)

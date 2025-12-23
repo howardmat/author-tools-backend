@@ -6,9 +6,9 @@ namespace AuthorTools.Api.Services;
 
 public class UserSettingService(
     IIdentityProvider identityProvider,
-    IUserSettingRepository repository) : IUserSettingService
+    IRepository<UserSetting> repository) : IUserSettingService
 {
-    private readonly IUserSettingRepository _repository = repository;
+    private readonly IRepository<UserSetting> _repository = repository;
     private readonly IIdentityProvider _identityProvider = identityProvider;
 
     public async Task<UserSetting?> GetAsync()

@@ -34,19 +34,19 @@ if (builder.Environment.IsDevelopment())
 var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
     ?? throw new ArgumentException("Error getting MongoDbSettings");
 
-builder.Services.AddSingleton<ICommonEntityRepository<Character>, CommonEntityRepository<Character>>(_ => new(
+builder.Services.AddSingleton<IRepository<Character>, MongoDbRepository<Character>>(_ => new(
     mongoDbSettings.ContainerNames.Character, 
     mongoDbSettings.DatabaseName, 
     mongoDbSettings.ConnectionString, 
     mongoDbSettings.ForcePartitionKey));
 
-builder.Services.AddSingleton<ICommonEntityRepository<Location>, CommonEntityRepository<Location>>(_ => new(
+builder.Services.AddSingleton<IRepository<Location>, MongoDbRepository<Location>>(_ => new(
     mongoDbSettings.ContainerNames.Location, 
     mongoDbSettings.DatabaseName, 
     mongoDbSettings.ConnectionString,
     mongoDbSettings.ForcePartitionKey));
 
-builder.Services.AddSingleton<ICommonEntityRepository<Creature>, CommonEntityRepository<Creature>>(_ => new(
+builder.Services.AddSingleton<IRepository<Creature>, MongoDbRepository<Creature>>(_ => new(
     mongoDbSettings.ContainerNames.Creature, 
     mongoDbSettings.DatabaseName, 
     mongoDbSettings.ConnectionString,

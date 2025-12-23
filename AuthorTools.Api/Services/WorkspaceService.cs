@@ -7,12 +7,12 @@ using System.Text.Json;
 namespace AuthorTools.Api.Services;
 
 public class WorkspaceService(
-    IWorkspaceRepository repository,
+    IRepository<Workspace> repository,
     IIdentityProvider identityProvider,
     WorkspaceValidationService workspaceValidationService,
     JsonSerializerOptions jsonSerializerOptions) : IWorkspaceService
 {
-    private readonly IWorkspaceRepository _repository = repository;
+    private readonly IRepository<Workspace> _repository = repository;
     private readonly IIdentityProvider _identityProvider = identityProvider;
     private readonly WorkspaceValidationService _workspaceValidationService = workspaceValidationService;
     private readonly JsonSerializerOptions _jsonSerializerOptions = jsonSerializerOptions;
