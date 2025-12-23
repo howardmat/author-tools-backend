@@ -34,8 +34,6 @@ The following values are configured in `local.settings.json`:
 - `MongoDbSettings__ContainerNames__Creature`: creatures
 - `MongoDbSettings__ForcePartitionKey`: false
 
-**Note**: See `local.settings.template.json` for a complete list of required configuration values.
-
 ## How it works
 
 The function runs on a timer schedule defined by a [cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression).
