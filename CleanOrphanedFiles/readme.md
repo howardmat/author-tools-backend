@@ -26,6 +26,7 @@ The following values are configured in `local.settings.json`:
 - `FUNCTIONS_WORKER_RUNTIME`: dotnet-isolated
 - `KeyVaultName`: author-tools-kv
 - `BlobStorageSettings__ConnectionString`: 
+- `BlobStorageSettings__ContainerName`: user-storage-container
 - `MongoDbSettings__ConnectionString`: 
 - `MongoDbSettings__DatabaseName`: app
 - `MongoDbSettings__ContainerNames__Character`: characters
