@@ -57,7 +57,7 @@ The application follows a client-server architecture where:
 ```
 AuthorTools.Api/          # Main API project with routes, services, and configuration
 AuthorTools.Data/         # Data access layer with repositories and MongoDB models
-AuthorTools.SharedLib/    # Shared utilities, extensions, and DTOs
+AuthorTools.Common/       # Shared utilities, extensions, services, and DTOs
 ```
 
 ## 🔧 Configuration

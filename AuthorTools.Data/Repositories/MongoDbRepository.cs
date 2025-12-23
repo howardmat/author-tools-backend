@@ -2,7 +2,7 @@
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Models.Interfaces;
 using AuthorTools.Data.Repositories.Interfaces;
-using AuthorTools.SharedLib.Models;
+using AuthorTools.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -11,14 +11,16 @@ namespace AuthorTools.Data.Repositories;
 
 public abstract class MongoDbRepository<T> : IRepository<T> where T : BaseMongoModel
 {
-    private readonly string _partitionKeyBase;
+    private readonly bool _forcePartitionKey;
+    private readonly string? _partitionKeyBase;
     private readonly IMongoCollection<T> _collection;
 
     public MongoDbRepository(
         string collectionName,
         string databaseName,
         string connectionString,
-        string partitionKeyBase)
+        bool forcePartitionKey,
+        string? partitionKeyBase = null)
     {
         var camelCaseConvention = new ConventionPack { new CamelCaseElementNameConvention() };
         ConventionRegistry.Register("CamelCase", camelCaseConvention, type => true);
@@ -28,6 +30,7 @@ public abstract class MongoDbRepository<T> : IRepository<T> where T : BaseMongoM
 
         _collection = mongoDatabase.GetCollection<T>(collectionName);
 
+        _forcePartitionKey = forcePartitionKey;
         _partitionKeyBase = partitionKeyBase;
     }
 
@@ -55,6 +58,14 @@ public abstract class MongoDbRepository<T> : IRepository<T> where T : BaseMongoM
         }
 
         return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<T>> GetAllAsync()
+    {
+        if (_forcePartitionKey)
+            throw new InvalidOperationException("Partition key is required for this repository.");
+
+        return await _collection.Find(FilterDefinition<T>.Empty).ToListAsync();
     }
 
     public async Task<T> GetByIdAsync(string id, string partitionKeyValue)

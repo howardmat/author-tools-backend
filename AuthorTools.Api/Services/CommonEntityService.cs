@@ -2,7 +2,7 @@
 using AuthorTools.Data.Enums;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
-using AuthorTools.SharedLib.Models;
+using AuthorTools.Common.Models;
 
 namespace AuthorTools.Api.Services;
 

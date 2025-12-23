@@ -1,10 +1,11 @@
-﻿namespace AuthorTools.Api.Options;
+﻿namespace AuthorTools.Common.Options;
 
 public class MongoDbSettings
 {
     public string ConnectionString { get; set; } = null!;
     public string DatabaseName { get; set; } = null!;
     public ContainerNames ContainerNames { get; set; } = new();
+    public bool ForcePartitionKey { get; set; }
 }
 
 public class ContainerNames

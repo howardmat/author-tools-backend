@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.SharedLib.Common;
+﻿namespace AuthorTools.Common.Common;
 
 public class CodeValue(string code, string value)
 {

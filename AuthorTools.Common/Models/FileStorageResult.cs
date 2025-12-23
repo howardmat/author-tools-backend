@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.Api.Models;
+﻿namespace AuthorTools.Common.Models;
 
 public class FileStorageResult(byte[] content, string fileName, string contentType)
 {

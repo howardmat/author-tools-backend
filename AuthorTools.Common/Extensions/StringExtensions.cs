@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.SharedLib.Extensions;
+﻿namespace AuthorTools.Common.Extensions;
 
 public static class StringExtensions
 {

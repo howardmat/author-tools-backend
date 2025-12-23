@@ -1,7 +1,7 @@
 ﻿using AuthorTools.Api.Filters;
 using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Models;
-using AuthorTools.SharedLib.Models;
+using AuthorTools.Common.Models;
 
 namespace AuthorTools.Api.Routes;
 
