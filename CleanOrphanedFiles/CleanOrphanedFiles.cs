@@ -20,7 +20,7 @@ public class CleanOrphanedFiles(
     private readonly IRepository<Creature> _creatureRepository = creatureRepository;
 
     [Function("CleanOrphanedFiles")]
-    public async Task RunAsync([TimerTrigger("0 0 2 * * *", RunOnStartup = true)] TimerInfo myTimer)
+    public async Task Run([TimerTrigger("0 0 2 * * *", RunOnStartup = true)] TimerInfo myTimer)
     {
         _logger.LogInformation("CleanOrphanedFiles Timer trigger function executed at: {executionTime}", DateTime.Now);
         
