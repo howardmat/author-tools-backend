@@ -3,6 +3,7 @@ using AuthorTools.Api.Options;
 using AuthorTools.Api.Routes;
 using AuthorTools.Api.Services;
 using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Common.Options;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories;
 using AuthorTools.Data.Repositories.Interfaces;
@@ -86,20 +87,40 @@ public class Program
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
             ?? throw new ArgumentException("Error getting MongoDbSettings");
 
-        builder.Services.AddSingleton<IUserSettingRepository, UserSettingRepository>(_ =>
-            new(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IRepository<UserSetting>, MongoDbRepository<UserSetting>>(_ => new(
+            mongoDbSettings.ContainerNames.UserSettings,
+            mongoDbSettings.DatabaseName, 
+            mongoDbSettings.ConnectionString, 
+            mongoDbSettings.ForcePartitionKey, 
+            environment));
 
-        builder.Services.AddSingleton<IWorkspaceRepository, WorkspaceRepository>(_ =>
-            new(mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IRepository<Workspace>, MongoDbRepository<Workspace>>(_ => new(
+            mongoDbSettings.ContainerNames.Workspace,
+            mongoDbSettings.DatabaseName, 
+            mongoDbSettings.ConnectionString,
+            mongoDbSettings.ForcePartitionKey,
+            environment));
 
-        builder.Services.AddSingleton<ICommonEntityRepository<Character>, CommonEntityRepository<Character>>(_ =>
-            new(mongoDbSettings.ContainerNames.Character, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IRepository<Character>, MongoDbRepository<Character>>(_ => new(
+            mongoDbSettings.ContainerNames.Character, 
+            mongoDbSettings.DatabaseName, 
+            mongoDbSettings.ConnectionString,
+            mongoDbSettings.ForcePartitionKey,
+            environment));
 
-        builder.Services.AddSingleton<ICommonEntityRepository<Location>, CommonEntityRepository<Location>>(_ =>
-            new(mongoDbSettings.ContainerNames.Location, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IRepository<Location>, MongoDbRepository<Location>>(_ => new(
+            mongoDbSettings.ContainerNames.Location, 
+            mongoDbSettings.DatabaseName, 
+            mongoDbSettings.ConnectionString,
+            mongoDbSettings.ForcePartitionKey,
+            environment));
 
-        builder.Services.AddSingleton<ICommonEntityRepository<Creature>, CommonEntityRepository<Creature>>(_ =>
-            new(mongoDbSettings.ContainerNames.Creature, mongoDbSettings.DatabaseName, mongoDbSettings.ConnectionString, environment));
+        builder.Services.AddSingleton<IRepository<Creature>, MongoDbRepository<Creature>>(_ => new(
+            mongoDbSettings.ContainerNames.Creature, 
+            mongoDbSettings.DatabaseName, 
+            mongoDbSettings.ConnectionString,
+            mongoDbSettings.ForcePartitionKey, 
+            environment));
 
         // JSON Serialization Options
         builder.Services.AddSingleton(new JsonSerializerOptions
@@ -107,8 +128,14 @@ public class Program
             PropertyNameCaseInsensitive = true
         });
 
+        // Azure Blob Storage
+        var blobStorageSettings = builder.Configuration.GetSection("BlobStorageSettings").Get<BlobStorageSettings>()
+            ?? throw new ArgumentException("Error getting BlobStorageSettings");
+
         // Services
-        builder.Services.AddScoped<AzureBlobService>();
+        builder.Services.AddScoped<AzureBlobService>(_ => new(
+            blobStorageSettings.ConnectionString, 
+            blobStorageSettings.ContainerName));
         builder.Services.AddScoped<IIdentityProvider, UserProvider>();
         builder.Services.AddScoped<IFileService, FileService>();
         builder.Services.AddScoped<IUserSettingService, UserSettingService>();

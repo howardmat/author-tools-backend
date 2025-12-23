@@ -1,4 +1,4 @@
-﻿using AuthorTools.SharedLib.Models;
+﻿using AuthorTools.Common.Models;
 
 namespace AuthorTools.Api.Services.Interfaces;
 

@@ -1,4 +1,4 @@
-﻿namespace AuthorTools.SharedLib.Models;
+﻿namespace AuthorTools.Common.Models;
 
 public class PatchRequest
 {

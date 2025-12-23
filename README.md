@@ -30,6 +30,7 @@ The application follows a client-server architecture where:
 - **Azure Blob Storage** - Stores user-uploaded files (character images, etc.) with metadata management
 - **Azure Key Vault** - Securely manages sensitive configuration values and connection strings in production
 - **Azure Identity** - Integrated authentication using `DefaultAzureCredential` for seamless Azure service access
+- **Azure Function** - Automated cleanup of orphaned files
 
 ### Database
 **[MongoDB](https://www.mongodb.com/)** - NoSQL document database for flexible schema design
@@ -57,7 +58,7 @@ The application follows a client-server architecture where:
 ```
 AuthorTools.Api/          # Main API project with routes, services, and configuration
 AuthorTools.Data/         # Data access layer with repositories and MongoDB models
-AuthorTools.SharedLib/    # Shared utilities, extensions, and DTOs
+AuthorTools.Common/       # Shared utilities, extensions, services, and DTOs
 ```
 
 ## 🔧 Configuration

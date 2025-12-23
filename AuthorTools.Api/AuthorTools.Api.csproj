@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
     <PackageReference Include="Azure.Identity" Version="1.17.1" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.26.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
@@ -18,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthorTools.Data\AuthorTools.Data.csproj" />
-    <ProjectReference Include="..\AuthorTools.SharedLib\AuthorTools.SharedLib.csproj" />
+    <ProjectReference Include="..\AuthorTools.Common\AuthorTools.Common.csproj" />
   </ItemGroup>
 
 </Project>

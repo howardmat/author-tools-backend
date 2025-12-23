@@ -1,4 +1,4 @@
-﻿using AuthorTools.Api.Models;
+﻿using AuthorTools.Common.Models;
 using Azure.Storage.Blobs;
 
 namespace AuthorTools.Api.Services;
@@ -8,16 +8,26 @@ public class AzureBlobService
     private const string METADATA_FILENAME = "Filename";
     private const string METADATA_CONTENTTYPE = "ContentType";
 
-    private readonly IConfiguration _configuration;
     private readonly BlobContainerClient _containerClient;
 
-    public AzureBlobService(IConfiguration configuration)
+    public AzureBlobService(
+        string connectionString,
+        string containerName)
     {
-        _configuration = configuration;
+        var blobServiceClient = new BlobServiceClient(connectionString);
+        _containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+    }
 
-        //todo move these config values to appsettings
-        var blobServiceClient = new BlobServiceClient(_configuration.GetConnectionString("UserFileStorageAccount"));
-        _containerClient = blobServiceClient.GetBlobContainerClient("user-storage-container");
+    public async Task<IEnumerable<string>> GetAllFileIdsAsync()
+    {
+        var fileIds = new List<string>();
+
+        await foreach (var blobItem in _containerClient.GetBlobsAsync())
+        {
+            fileIds.Add(blobItem.Name);
+        }
+
+        return fileIds;
     }
 
     public async Task<FileStorageResult> GetBlobAsync(string fileId)

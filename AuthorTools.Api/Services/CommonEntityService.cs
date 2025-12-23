@@ -2,18 +2,18 @@
 using AuthorTools.Data.Enums;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
-using AuthorTools.SharedLib.Models;
+using AuthorTools.Common.Models;
 
 namespace AuthorTools.Api.Services;
 
 public class CommonEntityService<T> : ICommonEntityService<T> where T : CommonEntity
 {
-    private readonly ICommonEntityRepository<T> _entityRepo;
+    private readonly IRepository<T> _entityRepo;
     private readonly IIdentityProvider _identityProvider;
     private readonly IFileService _fileService;
 
     public CommonEntityService(
-        ICommonEntityRepository<T> entityRepository,
+        IRepository<T> entityRepository,
         IIdentityProvider identityProvider,
         IFileService fileService)
     {

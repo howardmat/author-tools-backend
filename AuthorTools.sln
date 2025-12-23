@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35312.102
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorTools.Api", "AuthorTools.Api\AuthorTools.Api.csproj", "{26038202-1137-4688-994F-2FC8B7EDAE83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorTools.Data", "AuthorTools.Data\AuthorTools.Data.csproj", "{85C26BBB-7E96-4DC2-BC79-0034AF407300}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorTools.SharedLib", "AuthorTools.SharedLib\AuthorTools.SharedLib.csproj", "{32385FAA-D20D-49FB-A148-B1E6B3B16F24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorTools.Common", "AuthorTools.Common\AuthorTools.Common.csproj", "{32385FAA-D20D-49FB-A148-B1E6B3B16F24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{5A048CC6-0CFE-450F-94E3-C6734777DCF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanOrphanedFiles", "CleanOrphanedFiles\CleanOrphanedFiles.csproj", "{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +31,16 @@ Global
 		{32385FAA-D20D-49FB-A148-B1E6B3B16F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32385FAA-D20D-49FB-A148-B1E6B3B16F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32385FAA-D20D-49FB-A148-B1E6B3B16F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608} = {5A048CC6-0CFE-450F-94E3-C6734777DCF1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5824CC7-41A3-483D-9FBD-B85B1E6DF04F}

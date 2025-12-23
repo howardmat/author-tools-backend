@@ -1,0 +1,16 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "KeyVaultName": "author-tools-kv",
+    "BlobStorageSettings__ConnectionString": "",
+    "BlobStorageSettings__ContainerName": "user-storage-container",
+    "MongoDbSettings__ConnectionString": "",
+    "MongoDbSettings__DatabaseName": "app",
+    "MongoDbSettings__ContainerNames__Character": "characters",
+    "MongoDbSettings__ContainerNames__Location": "locations",
+    "MongoDbSettings__ContainerNames__Creature": "creatures",
+    "MongoDbSettings__ForcePartitionKey": false
+  }
+}
