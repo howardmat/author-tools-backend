@@ -8,8 +8,8 @@ using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories;
 using AuthorTools.Data.Repositories.Interfaces;
 using Azure.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
 using System.Text.Json;
 
@@ -51,31 +51,56 @@ public class Program
         // JWT Authentication
         var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
             ?? throw new ArgumentException("Error getting JWT Settings");
-        builder.Services.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(x =>
-        {
-            x.Authority = jwtSettings.Issuer;
-            x.TokenValidationParameters = new()
+        builder.Services.AddAuthentication()
+            .AddJwtBearer(x =>
             {
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
-            };
-        });
+                x.Authority = jwtSettings.Issuer;
+                x.Audience = jwtSettings.Audience;
+                x.TokenValidationParameters = new()
+                {
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+            });
 
         builder.Services.AddAuthorization();
+        builder.Services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer((document, context, cancellationToken) =>
+            {
+                // Ensure instances exist
+                document.Components ??= new OpenApiComponents();
+                document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
 
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+                // Add Bearer security scheme 
+                document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme."
+                };
+
+                // Apply security requirement globally
+                document.Security = [
+                    new OpenApiSecurityRequirement
+                    {
+                        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                    }
+                ];
+
+                // Set the host document for all elements
+                // including the security scheme references
+                document.SetReferenceHostDocument();
+
+                return Task.CompletedTask;
+            });
+        });
 
         // Appsettings to IOptions
         builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("Application"));
@@ -153,8 +178,11 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.MapOpenApi();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1.json", "v1");
+            });
         }
 
         app.UseHttpsRedirection();
