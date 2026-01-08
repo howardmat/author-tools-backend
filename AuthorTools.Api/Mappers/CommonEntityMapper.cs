@@ -36,7 +36,7 @@ public static class CommonEntityMapper
     {
         return new CommonEntityResponse
         {
-            Id = entity.Id,
+            Id = entity.Id!,
             Name = entity.Name,
             ImageFileId = entity.ImageFileId,
             Order = entity.Order,

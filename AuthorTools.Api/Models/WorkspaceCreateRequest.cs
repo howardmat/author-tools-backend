@@ -2,7 +2,7 @@
 
 public record WorkspaceCreateRequest
 {
-    public required string Name { get; init; }
+    public string? Name { get; init; }
     public string? Description { get; init; }
     public string? Icon { get; init; }
     public bool IsDefault { get; init; }

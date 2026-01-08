@@ -2,6 +2,6 @@
 
 public record UserSettingResponse
 {
-    public string? Id { get; init; }
-    public string? Theme { get; init; }
+    public required string Id { get; init; }
+    public required string Theme { get; init; }
 }

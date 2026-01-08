@@ -2,5 +2,5 @@
 
 public record UserSettingCreateRequest
 {
-    public required string Theme { get; init; }
+    public string? Theme { get; init; }
 }

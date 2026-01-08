@@ -28,8 +28,8 @@ public static class UserSettingMapper
     {
         return new UserSettingResponse
         {
-            Id = entity.Id,
-            Theme = entity.Theme,
+            Id = entity.Id!,
+            Theme = entity.Theme!
         };
     }
 }

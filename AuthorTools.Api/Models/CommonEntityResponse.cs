@@ -2,12 +2,12 @@
 
 namespace AuthorTools.Api.Models;
 
-public class CommonEntityResponse
+public record CommonEntityResponse
 {
-    public string? Id { get; set; }
-    public string? Name { get; set; }
-    public string? ImageFileId { get; set; }
-    public int? Order { get; set; }
+    public required string Id { get; init; }
+    public string? Name { get; init; }
+    public string? ImageFileId { get; init; }
+    public int? Order { get; init; }
 
-    public IEnumerable<DetailSection> DetailSections { get; set; } = [];
+    public IEnumerable<DetailSection> DetailSections { get; init; } = [];
 }

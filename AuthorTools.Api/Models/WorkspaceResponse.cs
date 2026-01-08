@@ -2,8 +2,8 @@
 
 public record WorkspaceResponse
 {
-    public string? Id { get; init; }
-    public string? Name { get; init; }
+    public required string Id { get; init; }
+    public required string Name { get; init; }
     public string? Description { get; init; }
     public string? Icon { get; init; }
     public bool IsDefault { get; init; }

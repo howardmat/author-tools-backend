@@ -10,7 +10,7 @@ public static class WorkspaceMapper
     {
         return new Workspace
         {
-            Name = request.Name,
+            Name = request.Name!,
             Description = request.Description,
             Icon = request.Icon,
             IsDefault = request.IsDefault,
@@ -23,7 +23,7 @@ public static class WorkspaceMapper
         return new Workspace
         {
             Id = id,
-            Name = request.Name,
+            Name = request.Name!,
             Description = request.Description,
             Icon = request.Icon,
             IsDefault = request.IsDefault,
@@ -35,7 +35,7 @@ public static class WorkspaceMapper
     {
         return new WorkspaceResponse
         {
-            Id = entity.Id,
+            Id = entity.Id!,
             Name = entity.Name,
             Description = entity.Description,
             Icon = entity.Icon,

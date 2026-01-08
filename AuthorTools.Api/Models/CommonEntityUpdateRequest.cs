@@ -2,9 +2,9 @@
 
 namespace AuthorTools.Api.Models;
 
-public class CommonEntityUpdateRequest
+public record CommonEntityUpdateRequest
 {
-    public required string Name { get; init; }
+    public string? Name { get; init; }
     public string? ImageFileId { get; set; }
     public int? Order { get; set; }
 
