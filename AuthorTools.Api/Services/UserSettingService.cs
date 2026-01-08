@@ -1,4 +1,6 @@
-﻿using AuthorTools.Api.Services.Interfaces;
+﻿using AuthorTools.Api.Mappers;
+using AuthorTools.Api.Models;
+using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
 
@@ -11,28 +13,33 @@ public class UserSettingService(
     private readonly IRepository<UserSetting> _repository = repository;
     private readonly IIdentityProvider _identityProvider = identityProvider;
 
-    public async Task<UserSetting?> GetAsync()
+    public async Task<UserSettingResponse?> GetAsync()
     {
         var user = _identityProvider.GetCurrentUser();
-        return (await _repository.GetAllAsync(user.Id)).FirstOrDefault();
+        var entity = (await _repository.GetAllAsync(user.Id)).FirstOrDefault();
+        return entity?.ToResponse();
     }
 
-    public async Task<UserSetting> CreateAsync(UserSetting userSetting)
+    public async Task<UserSettingResponse> CreateAsync(UserSettingCreateRequest request)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        userSetting.Owner = user;
+        var entity = request.ToEntity(user);
+        entity.Owner = user;
 
-        return await _repository.CreateAsync(userSetting, user.Id);
+        var created = await _repository.CreateAsync(entity, user.Id);
+        return created.ToResponse();
     }
 
-    public async Task<UserSetting> UpdateAsync(string id, UserSetting userSetting)
+    public async Task<UserSettingResponse> UpdateAsync(string id, UserSettingUpdateRequest request)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        userSetting.Id = id;
-        userSetting.Owner = user;
+        var entity = request.ToEntity(id, user);
+        entity.Id = id;
+        entity.Owner = user;
 
-        return await _repository.UpdateAsync(userSetting, user.Id);
+        var updated = await _repository.UpdateAsync(entity, user.Id);
+        return updated.ToResponse();
     }
 }

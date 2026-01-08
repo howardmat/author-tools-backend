@@ -1,13 +1,12 @@
 ﻿using AuthorTools.Api.Models;
-using AuthorTools.Data.Models;
 
 namespace AuthorTools.Api.Services.Interfaces;
 
 public interface IWorkspaceService
 {
-    Task<IEnumerable<Workspace>> GetAllAsync();
-    Task<Workspace> GetAsync(string id);
-    Task<Workspace> CreateAsync(Workspace workspace);
-    Task<Workspace> UpdateAsync(string id, Workspace workspace);
+    Task<IEnumerable<WorkspaceResponse>> GetAllAsync();
+    Task<WorkspaceResponse> GetAsync(string id);
+    Task<WorkspaceResponse> CreateAsync(WorkspaceCreateRequest request);
+    Task<WorkspaceResponse> UpdateAsync(string id, WorkspaceUpdateRequest request);
     Task<ServiceResult> DeleteAsync(string id);
 }

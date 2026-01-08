@@ -1,10 +1,10 @@
-﻿using AuthorTools.Data.Models;
+﻿using AuthorTools.Api.Models;
 
 namespace AuthorTools.Api.Services.Interfaces;
 
 public interface IUserSettingService
 {
-    Task<UserSetting?> GetAsync();
-    Task<UserSetting> CreateAsync(UserSetting userSetting);
-    Task<UserSetting> UpdateAsync(string id, UserSetting userSetting);
+    Task<UserSettingResponse?> GetAsync();
+    Task<UserSettingResponse> CreateAsync(UserSettingCreateRequest request);
+    Task<UserSettingResponse> UpdateAsync(string id, UserSettingUpdateRequest request);
 }

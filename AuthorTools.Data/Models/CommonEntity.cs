@@ -2,7 +2,7 @@
 
 namespace AuthorTools.Data.Models;
 
-public class CommonEntity : BaseMongoModel, ISortableModel, IWorkspaceModel
+public abstract class CommonEntity : BaseMongoModel, ISortableModel, IWorkspaceModel
 {
     public string? Name { get; set; }
     public string? ImageFileId { get; set; }

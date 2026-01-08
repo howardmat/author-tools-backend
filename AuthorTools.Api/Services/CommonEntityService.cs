@@ -3,10 +3,13 @@ using AuthorTools.Data.Enums;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
 using AuthorTools.Common.Models;
+using AuthorTools.Api.Mappers;
+using AuthorTools.Api.Models;
 
 namespace AuthorTools.Api.Services;
 
-public class CommonEntityService<T> : ICommonEntityService<T> where T : CommonEntity
+public class CommonEntityService<T> : ICommonEntityService<T>
+    where T : CommonEntity, new() 
 {
     private readonly IRepository<T> _entityRepo;
     private readonly IIdentityProvider _identityProvider;
@@ -22,35 +25,38 @@ public class CommonEntityService<T> : ICommonEntityService<T> where T : CommonEn
         _fileService = fileService;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(string workspaceId)
+    public async Task<IEnumerable<CommonEntityResponse>> GetAllAsync(string workspaceId)
     {
         var user = _identityProvider.GetCurrentUser();
-        return await _entityRepo.GetAllAsync<T>(user.Id, workspaceId, SortOrder.Ascending);
+        var entities = await _entityRepo.GetAllAsync<T>(user.Id, workspaceId, SortOrder.Ascending);
+        return entities.Select(e => e.ToResponse());
     }
 
-    public async Task<T> GetAsync(string id)
+    public async Task<CommonEntityResponse> GetAsync(string id)
     {
         var user = _identityProvider.GetCurrentUser();
-        return await _entityRepo.GetByIdAsync(id, user.Id);
+        var entity = await _entityRepo.GetByIdAsync(id, user.Id);
+        return entity.ToResponse();
     }
 
-    public async Task<T> CreateAsync(T entity)
+    public async Task<CommonEntityResponse> CreateAsync(CommonEntityCreateRequest request)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        entity.Owner = user;
+        var entity = request.ToEntity<T>(user);
+        var created = await _entityRepo.CreateAsync(entity, user.Id);
 
-        return await _entityRepo.CreateAsync(entity, user.Id);
+        return created.ToResponse();
     }
 
-    public async Task<T> UpdateAsync(string id, T entity)
+    public async Task<CommonEntityResponse> UpdateAsync(string id, CommonEntityUpdateRequest request)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        entity.Id = id;
-        entity.Owner = user;
+        var entity = request.ToEntity<T>(id, user);
+        var updated = await _entityRepo.UpdateAsync(entity, user.Id);
 
-        return await _entityRepo.UpdateAsync(entity, user.Id);
+        return updated.ToResponse();
     }
 
     public async Task PatchAsync(string id, IEnumerable<PatchRequest> patchRequests)

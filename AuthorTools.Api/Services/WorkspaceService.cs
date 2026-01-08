@@ -1,4 +1,5 @@
-﻿using AuthorTools.Api.Models;
+﻿using AuthorTools.Api.Mappers;
+using AuthorTools.Api.Models;
 using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
@@ -17,7 +18,7 @@ public class WorkspaceService(
     private readonly WorkspaceValidationService _workspaceValidationService = workspaceValidationService;
     private readonly JsonSerializerOptions _jsonSerializerOptions = jsonSerializerOptions;
 
-    public async Task<IEnumerable<Workspace>> GetAllAsync()
+    public async Task<IEnumerable<WorkspaceResponse>> GetAllAsync()
     {
         var user = _identityProvider.GetCurrentUser();
         var workspaces = await _repository.GetAllAsync(user.Id);
@@ -28,45 +29,50 @@ public class WorkspaceService(
             defaultWorkspace.Owner = user;
             
             var createdWorkspace = await _repository.CreateAsync(defaultWorkspace, user.Id);
-            workspaces = new List<Workspace> { createdWorkspace };
+            workspaces = [createdWorkspace];
         }
 
-        return workspaces;
+        return workspaces.Select(w => w.ToResponse());
     }
 
-    public async Task<Workspace> GetAsync(string id)
+    public async Task<WorkspaceResponse> GetAsync(string id)
     {
         var user = _identityProvider.GetCurrentUser();
-        return await _repository.GetByIdAsync(id, user.Id);
+        var entity = await _repository.GetByIdAsync(id, user.Id);
+        return entity.ToResponse();
     }
 
-    public async Task<Workspace> CreateAsync(Workspace workspace)
+    public async Task<WorkspaceResponse> CreateAsync(WorkspaceCreateRequest request)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        workspace.Owner = user;
+        var entity = request.ToEntity(user);
+        entity.Owner = user;
 
-        if (workspace.IsDefault)
+        if (entity.IsDefault)
         {
             await ClearDefaultWorkspaceAsync(null, user.Id);
         }
 
-        return await _repository.CreateAsync(workspace, user.Id);
+        var created = await _repository.CreateAsync(entity, user.Id);
+        return created.ToResponse();
     }
 
-    public async Task<Workspace> UpdateAsync(string id, Workspace workspace)
+    public async Task<WorkspaceResponse> UpdateAsync(string id, WorkspaceUpdateRequest request)
     {
         var user = _identityProvider.GetCurrentUser();
 
-        workspace.Id = id;
-        workspace.Owner = user;
+        var entity = request.ToEntity(id, user);
+        entity.Id = id;
+        entity.Owner = user;
 
-        if (workspace.IsDefault)
+        if (entity.IsDefault)
         {
             await ClearDefaultWorkspaceAsync(id, user.Id);
         }
 
-        return await _repository.UpdateAsync(workspace, user.Id);
+        var updated = await _repository.UpdateAsync(entity, user.Id);
+        return updated.ToResponse();
     }
 
     public async Task<ServiceResult> DeleteAsync(string id)
