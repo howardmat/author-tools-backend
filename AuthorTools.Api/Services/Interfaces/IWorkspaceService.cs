@@ -1,13 +1,14 @@
 ﻿using AuthorTools.Api.Models;
-using AuthorTools.Data.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AuthorTools.Api.Services.Interfaces;
 
 public interface IWorkspaceService
 {
-    Task<IEnumerable<Workspace>> GetAllAsync();
-    Task<Workspace> GetAsync(string id);
-    Task<Workspace> CreateAsync(Workspace workspace);
-    Task<Workspace> UpdateAsync(string id, Workspace workspace);
-    Task<ServiceResult> DeleteAsync(string id);
+    Task<Ok<IEnumerable<WorkspaceResponse>>> GetAllAsync();
+    Task<Results<Ok<WorkspaceResponse>, NotFound>> GetAsync(string id);
+    Task<Results<Ok<WorkspaceResponse>, BadRequest<ValidationProblemDetails>>> CreateAsync(WorkspaceCreateRequest request);
+    Task<Results<Ok<WorkspaceResponse>, NotFound, BadRequest<ValidationProblemDetails>>> UpdateAsync(string id, WorkspaceUpdateRequest request);
+    Task<Results<Ok, NotFound, Conflict<ProblemDetails>>> DeleteAsync(string id);
 }

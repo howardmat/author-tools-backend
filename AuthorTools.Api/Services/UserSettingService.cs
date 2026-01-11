@@ -1,38 +1,60 @@
-﻿using AuthorTools.Api.Services.Interfaces;
+﻿using AuthorTools.Api.Mappers;
+using AuthorTools.Api.Models;
+using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Api.Validators;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
+using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AuthorTools.Api.Services;
 
 public class UserSettingService(
     IIdentityProvider identityProvider,
-    IRepository<UserSetting> repository) : IUserSettingService
+    IRepository<UserSetting> repository,
+    IValidator<UserSettingCreateRequest> createValidator,
+    IValidator<UserSettingUpdateRequest> updateValidator) : IUserSettingService
 {
-    private readonly IRepository<UserSetting> _repository = repository;
-    private readonly IIdentityProvider _identityProvider = identityProvider;
-
-    public async Task<UserSetting?> GetAsync()
+    public async Task<Ok<UserSettingResponse?>> GetAsync()
     {
-        var user = _identityProvider.GetCurrentUser();
-        return (await _repository.GetAllAsync(user.Id)).FirstOrDefault();
+        var user = identityProvider.GetCurrentUser();
+        var entity = (await repository.GetAllAsync(user.Id)).FirstOrDefault();
+        return TypedResults.Ok<UserSettingResponse?>(entity?.ToResponse());
     }
 
-    public async Task<UserSetting> CreateAsync(UserSetting userSetting)
+    public async Task<Results<Ok<UserSettingResponse>, BadRequest<ValidationProblemDetails>>> CreateAsync(UserSettingCreateRequest request)
     {
-        var user = _identityProvider.GetCurrentUser();
+        var validationResult = createValidator.Validate(request);
+        if (!validationResult.IsValid)
+            return validationResult.Errors.ToBadRequest();
 
-        userSetting.Owner = user;
+        var user = identityProvider.GetCurrentUser();
 
-        return await _repository.CreateAsync(userSetting, user.Id);
+        var entity = request.ToEntity(user);
+        entity.Owner = user;
+
+        var created = await repository.CreateAsync(entity, user.Id);
+        return TypedResults.Ok(created.ToResponse());
     }
 
-    public async Task<UserSetting> UpdateAsync(string id, UserSetting userSetting)
+    public async Task<Results<Ok<UserSettingResponse>, NotFound, BadRequest<ValidationProblemDetails>>> UpdateAsync(string id, UserSettingUpdateRequest request)
     {
-        var user = _identityProvider.GetCurrentUser();
+        var validationResult = updateValidator.Validate(request);
+        if (!validationResult.IsValid)
+            return validationResult.Errors.ToBadRequest();
 
-        userSetting.Id = id;
-        userSetting.Owner = user;
+        var user = identityProvider.GetCurrentUser();
 
-        return await _repository.UpdateAsync(userSetting, user.Id);
+        var existingEntity = await repository.GetByIdAsync(id, user.Id);
+        if (existingEntity == null)
+            return TypedResults.NotFound();
+
+        var entity = request.ToEntity(id, user);
+        entity.Id = id;
+        entity.Owner = user;
+
+        var updated = await repository.UpdateAsync(entity, user.Id);
+        return TypedResults.Ok(updated.ToResponse());
     }
 }

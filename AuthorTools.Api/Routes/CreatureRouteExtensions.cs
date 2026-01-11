@@ -2,6 +2,7 @@
 using AuthorTools.Api.Services.Interfaces;
 using AuthorTools.Data.Models;
 using AuthorTools.Common.Models;
+using AuthorTools.Api.Models;
 
 namespace AuthorTools.Api.Routes;
 
@@ -12,7 +13,7 @@ public static class CreatureRouteExtensions
         var group = app.MapGroup("/creatures")
             .RequireAuthorization()
             .AddEndpointFilter<JwtUserEndpointFilter>()
-            .WithTags($"{typeof(Creature).Name}");
+            .WithTags("Creature");
 
         group.MapGet("", async (string workspaceId, ICommonEntityService<Creature> entityService)
             => await entityService.GetAllAsync(workspaceId));
@@ -20,10 +21,10 @@ public static class CreatureRouteExtensions
         group.MapGet("{id}", async (string id, ICommonEntityService<Creature> entityService)
             => await entityService.GetAsync(id));
 
-        group.MapPost("", async (Creature entity, ICommonEntityService<Creature> entityService)
-            => await entityService.CreateAsync(entity));
+        group.MapPost("", async (CommonEntityCreateRequest request, ICommonEntityService<Creature> entityService)
+            => await entityService.CreateAsync(request));
 
-        group.MapPut("{id}", async (string id, Creature entity, ICommonEntityService<Creature> entityService)
+        group.MapPut("{id}", async (string id, CommonEntityUpdateRequest entity, ICommonEntityService<Creature> entityService)
             => await entityService.UpdateAsync(id, entity));
 
         group.MapPatch("{id}", async (string id, PatchRequest[] patchRequests, ICommonEntityService<Creature> entityService)

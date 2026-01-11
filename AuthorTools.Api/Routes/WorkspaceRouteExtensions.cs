@@ -1,6 +1,6 @@
 ﻿using AuthorTools.Api.Filters;
+using AuthorTools.Api.Models;
 using AuthorTools.Api.Services.Interfaces;
-using AuthorTools.Data.Models;
 
 namespace AuthorTools.Api.Routes;
 
@@ -11,16 +11,16 @@ public static class WorkspaceRouteExtensions
         var group = app.MapGroup("/workspace")
             .RequireAuthorization()
             .AddEndpointFilter<JwtUserEndpointFilter>()
-            .WithTags($"{typeof(Workspace).Name}");
+            .WithTags("Workspace");
 
         group.MapGet("", async (IWorkspaceService service) => await service.GetAllAsync());
 
         group.MapGet("{id}", async (string id, IWorkspaceService service) => await service.GetAsync(id));
 
-        group.MapPost("", async (Workspace model, IWorkspaceService service) => await service.CreateAsync(model));
+        group.MapPost("", async (WorkspaceCreateRequest request, IWorkspaceService service) => await service.CreateAsync(request));
 
-        group.MapPut("{id}", async (string id, Workspace model, IWorkspaceService service) => await service.UpdateAsync(id, model));
+        group.MapPut("{id}", async (string id, WorkspaceUpdateRequest request, IWorkspaceService service) => await service.UpdateAsync(id, request));
 
-        group.MapDelete("{id}", async (string id, IWorkspaceService service) => (await service.DeleteAsync(id)).ToHttpResult());
+        group.MapDelete("{id}", async (string id, IWorkspaceService service) => await service.DeleteAsync(id));
     }
 }

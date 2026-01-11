@@ -3,73 +3,101 @@ using AuthorTools.Data.Enums;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories.Interfaces;
 using AuthorTools.Common.Models;
+using AuthorTools.Api.Mappers;
+using AuthorTools.Api.Models;
+using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using AuthorTools.Api.Validators;
 
 namespace AuthorTools.Api.Services;
 
-public class CommonEntityService<T> : ICommonEntityService<T> where T : CommonEntity
+public class CommonEntityService<T>(
+    IRepository<T> entityRepository,
+    IIdentityProvider identityProvider,
+    IFileService fileService,
+    IValidator<CommonEntityCreateRequest> createValidator,
+    IValidator<CommonEntityUpdateRequest> updateValidator) : ICommonEntityService<T>
+    where T : CommonEntity, new() 
 {
-    private readonly IRepository<T> _entityRepo;
-    private readonly IIdentityProvider _identityProvider;
-    private readonly IFileService _fileService;
-
-    public CommonEntityService(
-        IRepository<T> entityRepository,
-        IIdentityProvider identityProvider,
-        IFileService fileService)
+    public async Task<Ok<IEnumerable<CommonEntityResponse>>> GetAllAsync(string workspaceId)
     {
-        _entityRepo = entityRepository;
-        _identityProvider = identityProvider;
-        _fileService = fileService;
+        var user = identityProvider.GetCurrentUser();
+        var entities = await entityRepository.GetAllAsync<T>(user.Id, workspaceId, SortOrder.Ascending);
+        return TypedResults.Ok(entities.Select(e => e.ToResponse()));
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(string workspaceId)
+    public async Task<Results<Ok<CommonEntityResponse>, NotFound>> GetAsync(string id)
     {
-        var user = _identityProvider.GetCurrentUser();
-        return await _entityRepo.GetAllAsync<T>(user.Id, workspaceId, SortOrder.Ascending);
+        var user = identityProvider.GetCurrentUser();
+        var entity = await entityRepository.GetByIdAsync(id, user.Id);
+        return entity != null 
+            ? TypedResults.Ok(entity.ToResponse())
+            : TypedResults.NotFound();
     }
 
-    public async Task<T> GetAsync(string id)
+    public async Task<Results<Ok<CommonEntityResponse>, BadRequest<ValidationProblemDetails>>> CreateAsync(CommonEntityCreateRequest request)
     {
-        var user = _identityProvider.GetCurrentUser();
-        return await _entityRepo.GetByIdAsync(id, user.Id);
-    }
-
-    public async Task<T> CreateAsync(T entity)
-    {
-        var user = _identityProvider.GetCurrentUser();
-
-        entity.Owner = user;
-
-        return await _entityRepo.CreateAsync(entity, user.Id);
-    }
-
-    public async Task<T> UpdateAsync(string id, T entity)
-    {
-        var user = _identityProvider.GetCurrentUser();
-
-        entity.Id = id;
-        entity.Owner = user;
-
-        return await _entityRepo.UpdateAsync(entity, user.Id);
-    }
-
-    public async Task PatchAsync(string id, IEnumerable<PatchRequest> patchRequests)
-    {
-        var user = _identityProvider.GetCurrentUser();
-
-        await _entityRepo.PatchAsync(id, patchRequests, user.Id);
-    }
-
-    public async Task DeleteAsync(string id)
-    {
-        var user = _identityProvider.GetCurrentUser();
-
-        var entity = await GetAsync(id);
-        if (!string.IsNullOrWhiteSpace(entity.ImageFileId))
+        var validationResult = createValidator.Validate(request);
+        if (!validationResult.IsValid)
         {
-            await _fileService.DeleteAsync(entity.ImageFileId);
+            return validationResult.Errors.ToBadRequest();
         }
 
-        await _entityRepo.DeleteAsync(id, user.Id);
+        var user = identityProvider.GetCurrentUser();
+
+        var entity = request.ToEntity<T>(user);
+        var created = await entityRepository.CreateAsync(entity, user.Id);
+
+        return TypedResults.Ok(created.ToResponse());
+    }
+
+    public async Task<Results<Ok<CommonEntityResponse>, NotFound, BadRequest<ValidationProblemDetails>>> UpdateAsync(string id, CommonEntityUpdateRequest request)
+    {
+        var validationResult = updateValidator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            return validationResult.Errors.ToBadRequest();
+        }
+
+        var user = identityProvider.GetCurrentUser();
+
+        var existingEntity = await entityRepository.GetByIdAsync(id, user.Id);
+        if (existingEntity == null)
+            return TypedResults.NotFound();
+
+        var entity = request.ToEntity<T>(id, user);
+        var updated = await entityRepository.UpdateAsync(entity, user.Id);
+
+        return TypedResults.Ok(updated.ToResponse());
+    }
+
+    public async Task<Results<Ok<CommonEntityResponse>, NotFound>> PatchAsync(string id, IEnumerable<PatchRequest> patchRequests)
+    {
+        var user = identityProvider.GetCurrentUser();
+
+        var existingEntity = await entityRepository.GetByIdAsync(id, user.Id);
+        if (existingEntity == null)
+            return TypedResults.NotFound();
+
+        var updated = await entityRepository.PatchAsync(id, patchRequests, user.Id);
+        return TypedResults.Ok(updated.ToResponse());
+    }
+
+    public async Task<Results<Ok, NotFound>> DeleteAsync(string id)
+    {
+        var user = identityProvider.GetCurrentUser();
+
+        var entity = await entityRepository.GetByIdAsync(id, user.Id);
+        if (entity == null)
+            return TypedResults.NotFound();
+
+        if (!string.IsNullOrWhiteSpace(entity.ImageFileId))
+        {
+            await fileService.DeleteAsync(entity.ImageFileId);
+        }
+
+        await entityRepository.DeleteAsync(id, user.Id);
+        return TypedResults.Ok();
     }
 }
