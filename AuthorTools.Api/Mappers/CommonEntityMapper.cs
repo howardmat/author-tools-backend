@@ -25,6 +25,7 @@ public static class CommonEntityMapper
             Id = id,
             Name = request.Name,
             ImageFileId = request.ImageFileId,
+            WorkspaceId = request.WorkspaceId,
             Order = request.Order,
             DetailSections = request.DetailSections,
             Owner = owner
@@ -39,6 +40,7 @@ public static class CommonEntityMapper
             Id = entity.Id!,
             Name = entity.Name,
             ImageFileId = entity.ImageFileId,
+            WorkspaceId = entity.WorkspaceId,
             Order = entity.Order,
             DetailSections = entity.DetailSections
         };
