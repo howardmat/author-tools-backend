@@ -1,4 +1,5 @@
 ﻿using AuthorTools.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AuthorTools.Api.Services;
 
@@ -10,7 +11,7 @@ public class FileService(AzureBlobService azureBlobService) : IFileService
         return Results.File(fileResult.FileContent, fileResult.ContentType, fileResult.FileName);
     }
 
-    public async Task<IResult> UploadAsync(IFormFile file)
+    public async Task<Ok<string>> UploadAsync(IFormFile file)
     {
         var fileId = Guid.NewGuid().ToString();
 
@@ -18,7 +19,7 @@ public class FileService(AzureBlobService azureBlobService) : IFileService
         await file.CopyToAsync(memoryStream);
         await azureBlobService.UploadBlobAsync(file.FileName, fileId, file.ContentType, memoryStream.ToArray());
 
-        return Results.Ok(fileId);
+        return TypedResults.Ok(fileId);
     }
 
     public async Task<IResult> DeleteAsync(string id)

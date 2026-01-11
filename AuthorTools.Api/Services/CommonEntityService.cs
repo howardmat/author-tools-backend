@@ -20,7 +20,7 @@ public class CommonEntityService<T>(
     IValidator<CommonEntityUpdateRequest> updateValidator) : ICommonEntityService<T>
     where T : CommonEntity, new() 
 {
-    public async Task<Results<Ok<IEnumerable<CommonEntityResponse>>, BadRequest>> GetAllAsync(string workspaceId)
+    public async Task<Ok<IEnumerable<CommonEntityResponse>>> GetAllAsync(string workspaceId)
     {
         var user = identityProvider.GetCurrentUser();
         var entities = await entityRepository.GetAllAsync<T>(user.Id, workspaceId, SortOrder.Ascending);

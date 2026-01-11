@@ -7,7 +7,7 @@ namespace AuthorTools.Api.Services.Interfaces;
 
 public interface ICommonEntityService<T>
 {
-    Task<Results<Ok<IEnumerable<CommonEntityResponse>>, BadRequest>> GetAllAsync(string workspaceId);
+    Task<Ok<IEnumerable<CommonEntityResponse>>> GetAllAsync(string workspaceId);
     Task<Results<Ok<CommonEntityResponse>, NotFound>> GetAsync(string id);
     Task<Results<Ok<CommonEntityResponse>, BadRequest<ValidationProblemDetails>>> CreateAsync(CommonEntityCreateRequest request);
     Task<Results<Ok<CommonEntityResponse>, NotFound, BadRequest<ValidationProblemDetails>>> UpdateAsync(string id, CommonEntityUpdateRequest request);
