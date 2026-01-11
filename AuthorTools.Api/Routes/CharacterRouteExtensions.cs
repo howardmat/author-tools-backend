@@ -15,12 +15,6 @@ public static class CharacterRouteExtensions
             .AddEndpointFilter<JwtUserEndpointFilter>()
             .WithTags("Character");
 
-        //todo 
-        //1. Create DTO models in Api, eg. /models/requests/CreateCharacterRequest
-        //2. Create DTO validators in Api, eg. /validators/CreateCharacterValidator
-        //3. Update Service layer to map DTO models to Data models
-        //4. Can this RouteExtension be made into a single class that supports Generics for common entities?
-
         group.MapGet("", async (string workspaceId, ICommonEntityService<Character> entityService)
             => await entityService.GetAllAsync(workspaceId));
 

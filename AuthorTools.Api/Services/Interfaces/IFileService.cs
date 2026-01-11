@@ -3,6 +3,6 @@
 public interface IFileService
 {
     Task<IResult> GetFileResult(string id);
-    Task<string> UploadAsync(IFormFile file);
-    Task DeleteAsync(string id);
+    Task<IResult> UploadAsync(IFormFile file);
+    Task<IResult> DeleteAsync(string id);
 }

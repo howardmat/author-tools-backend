@@ -21,6 +21,6 @@ public static class WorkspaceRouteExtensions
 
         group.MapPut("{id}", async (string id, WorkspaceUpdateRequest request, IWorkspaceService service) => await service.UpdateAsync(id, request));
 
-        group.MapDelete("{id}", async (string id, IWorkspaceService service) => (await service.DeleteAsync(id)).ToHttpResult());
+        group.MapDelete("{id}", async (string id, IWorkspaceService service) => await service.DeleteAsync(id));
     }
 }

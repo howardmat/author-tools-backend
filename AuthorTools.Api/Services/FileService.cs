@@ -2,35 +2,28 @@
 
 namespace AuthorTools.Api.Services;
 
-public class FileService : IFileService
+public class FileService(AzureBlobService azureBlobService) : IFileService
 {
-    private readonly AzureBlobService _azureBlobService;
-
-    public FileService(
-        AzureBlobService azureBlobService)
-    {
-        _azureBlobService = azureBlobService;
-    }
-
     public async Task<IResult> GetFileResult(string id)
     {
-        var fileResult = await _azureBlobService.GetBlobAsync(id);
+        var fileResult = await azureBlobService.GetBlobAsync(id);
         return Results.File(fileResult.FileContent, fileResult.ContentType, fileResult.FileName);
     }
 
-    public async Task<string> UploadAsync(IFormFile file)
+    public async Task<IResult> UploadAsync(IFormFile file)
     {
         var fileId = Guid.NewGuid().ToString();
 
         using var memoryStream = new MemoryStream();
         await file.CopyToAsync(memoryStream);
-        await _azureBlobService.UploadBlobAsync(file.FileName, fileId, file.ContentType, memoryStream.ToArray());
+        await azureBlobService.UploadBlobAsync(file.FileName, fileId, file.ContentType, memoryStream.ToArray());
 
-        return fileId;
+        return Results.Ok(fileId);
     }
 
-    public async Task DeleteAsync(string id)
+    public async Task<IResult> DeleteAsync(string id)
     {
-        await _azureBlobService.DeleteBlobAsync(id);
+        await azureBlobService.DeleteBlobAsync(id);
+        return Results.Ok();
     }
 }

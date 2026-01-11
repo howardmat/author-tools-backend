@@ -1,13 +1,16 @@
 using AuthorTools.Api.Handlers;
+using AuthorTools.Api.Models;
 using AuthorTools.Api.Options;
 using AuthorTools.Api.Routes;
 using AuthorTools.Api.Services;
 using AuthorTools.Api.Services.Interfaces;
+using AuthorTools.Api.Validators;
 using AuthorTools.Common.Options;
 using AuthorTools.Data.Models;
 using AuthorTools.Data.Repositories;
 using AuthorTools.Data.Repositories.Interfaces;
 using Azure.Identity;
+using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
@@ -108,7 +111,7 @@ public class Program
         var environment = builder.Configuration.GetValue<string>("Application:Environment")
             ?? throw new ArgumentException("Error getting Application:Environment");
 
-        // Repos
+        // Data Repositories
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>()
             ?? throw new ArgumentException("Error getting MongoDbSettings");
 
@@ -168,7 +171,15 @@ public class Program
         builder.Services.AddScoped<ICommonEntityService<Character>, CommonEntityService<Character>>();
         builder.Services.AddScoped<ICommonEntityService<Location>, CommonEntityService<Location>>();
         builder.Services.AddScoped<ICommonEntityService<Creature>, CommonEntityService<Creature>>();
-        builder.Services.AddScoped<WorkspaceValidationService>();
+
+        // Validators
+        builder.Services.AddScoped<IValidator<CommonEntityCreateRequest>, CommonEntityCreateRequestValidator>();
+        builder.Services.AddScoped<IValidator<CommonEntityUpdateRequest>, CommonEntityUpdateRequestValidator>();
+        builder.Services.AddScoped<IValidator<UserSettingCreateRequest>, UserSettingCreateRequestValidator>();
+        builder.Services.AddScoped<IValidator<UserSettingUpdateRequest>, UserSettingUpdateRequestValidator>();
+        builder.Services.AddScoped<IValidator<WorkspaceCreateRequest>, WorkspaceCreateRequestValidator>();
+        builder.Services.AddScoped<IValidator<WorkspaceUpdateRequest>, WorkspaceUpdateRequestValidator>();
+        builder.Services.AddScoped<IValidator<Workspace>, WorkspaceDeleteValidator>();
 
         var app = builder.Build();
 

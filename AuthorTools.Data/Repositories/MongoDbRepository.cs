@@ -68,7 +68,7 @@ public class MongoDbRepository<T> : IRepository<T> where T : BaseMongoModel
         return await _collection.Find(FilterDefinition<T>.Empty).ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(string id, string partitionKeyValue)
+    public async Task<T?> GetByIdAsync(string id, string partitionKeyValue)
     {
         return await _collection.Find(x => x.Id == id && x.PartitionKey == GetPartitionKey(partitionKeyValue))
                .FirstOrDefaultAsync();
@@ -103,7 +103,7 @@ public class MongoDbRepository<T> : IRepository<T> where T : BaseMongoModel
         return entity;
     }
 
-    public async Task PatchAsync(string id, IEnumerable<PatchRequest> operations, string partitionKeyValue)
+    public async Task<T> PatchAsync(string id, IEnumerable<PatchRequest> operations, string partitionKeyValue)
     {
         var filter = Builders<T>.Filter.Eq(c => c.Id, id);
         filter &= Builders<T>.Filter.Eq(c => c.PartitionKey, GetPartitionKey(partitionKeyValue));
@@ -132,11 +132,13 @@ public class MongoDbRepository<T> : IRepository<T> where T : BaseMongoModel
         update = update.Set("UpdatedDateTime", DateTimeOffset.UtcNow);
 
         await _collection.UpdateOneAsync(filter, update);
+        return await GetByIdAsync(id, partitionKeyValue) ?? throw new InvalidOperationException("Entity was not found");
     }
 
-    public async Task DeleteAsync(string id, string partitionKeyValue)
+    public async Task<bool> DeleteAsync(string id, string partitionKeyValue)
     {
-        await _collection.DeleteOneAsync(x => x.Id == id && x.PartitionKey == GetPartitionKey(partitionKeyValue));
+        var result = await _collection.DeleteOneAsync(x => x.Id == id && x.PartitionKey == GetPartitionKey(partitionKeyValue));
+        return result.DeletedCount > 0;
     }
 
     public bool Any(FilterDefinition<T> filterDefinition, string partitionKeyValue)
