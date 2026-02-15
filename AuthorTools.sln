@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11312.210 d18.3
+VisualStudioVersion = 18.3.11312.210
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorTools.Api", "AuthorTools.Api\AuthorTools.Api.csproj", "{26038202-1137-4688-994F-2FC8B7EDAE83}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{5A048CC6-0CFE-450F-94E3-C6734777DCF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanOrphanedFiles", "CleanOrphanedFiles\CleanOrphanedFiles.csproj", "{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorTools.Tests", "AuthorTools.Tests\AuthorTools.Tests.csproj", "{6D0D4EA9-DE2A-11F1-11AF-A01DFB693117}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF02C2D1-0FA8-499E-A7F4-6A3F30B76608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D0D4EA9-DE2A-11F1-11AF-A01DFB693117}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D0D4EA9-DE2A-11F1-11AF-A01DFB693117}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D0D4EA9-DE2A-11F1-11AF-A01DFB693117}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D0D4EA9-DE2A-11F1-11AF-A01DFB693117}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
